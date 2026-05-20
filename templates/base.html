@@ -1,0 +1,599 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Rose & Ivy | Premium Floral Curations{% endblock %}</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandWhite: '#FFFFFF',
+                        brandCharcoal: '#222222',
+                        brandGold: '#D4AF37',
+                        brandChampagne: '#F7E7CE',
+                        brandPink: '#D9A0A8',
+                        brandMuted: '#71717A',
+                    },
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'Playfair Display', 'serif'],
+                        sans: ['Inter', 'Montserrat', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom styling triggers -->
+    <style>
+        .nav-hover-line {
+            position: relative;
+        }
+        .nav-hover-line::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -4px;
+            left: 50%;
+            background-color: #D4AF37;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        .nav-hover-line:hover::after, .nav-hover-line.active::after {
+            width: 100%;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F4F4F5;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D4AF37;
+            border-radius: 3px;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-brandWhite text-brandCharcoal font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Top Low-Profile Promo Banner -->
+    <div class="bg-brandCharcoal text-white text-[10px] md:text-xs tracking-[0.15em] font-medium py-2.5 text-center px-4 uppercase select-none border-b border-white/5">
+        GET 10% OFF, CODE: <span class="text-brandGold font-bold">FIRST10</span> | FREE SAME-DAY SHIPPING ON ORDERS OVER AED 500
+    </div>
+
+    <!-- Sticky Elegant Premium Header -->
+    <header class="sticky top-0 bg-white/95 backdrop-blur-md z-40 border-b border-zinc-100 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Left: Logo -->
+            <a href="{% url 'store:home' %}" class="flex items-center gap-2 group">
+                <span class="font-serif text-2xl md:text-3xl font-medium tracking-wide text-brandCharcoal transition-colors hover:text-brandGold">
+                    Rose & Ivy
+                </span>
+            </a>
+
+            <!-- Center: Elegant Categories Menu -->
+            <nav class="hidden lg:flex items-center gap-8 font-medium text-sm tracking-widest text-brandCharcoal uppercase">
+                <!-- Occasions Menu -->
+                <div class="relative group py-4">
+                    <button class="flex items-center gap-1 hover:text-brandGold transition-colors nav-hover-line">
+                        Occasions <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
+                    </button>
+                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-48 bg-white border border-zinc-100 shadow-xl opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2">
+                        <a href="{% url 'store:product_list' %}?q=Anniversary" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Anniversary</a>
+                        <a href="{% url 'store:product_list' %}?q=Birthday" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Birthday</a>
+                        <a href="{% url 'store:product_list' %}?q=Ramadan" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Ramadan</a>
+                    </div>
+                </div>
+
+                <!-- Flowers Menu -->
+                <div class="relative group py-4">
+                    <button class="flex items-center gap-1 hover:text-brandGold transition-colors nav-hover-line">
+                        Flowers <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
+                    </button>
+                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-48 bg-white border border-zinc-100 shadow-xl opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2">
+                        <a href="{% url 'store:product_list' %}?category=bouquets" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Bouquets</a>
+                        <a href="{% url 'store:product_list' %}?q=vase" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Vases</a>
+                        <a href="{% url 'store:product_list' %}?q=box" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Boxes</a>
+                    </div>
+                </div>
+
+                <!-- Combos Menu -->
+                <div class="relative group py-4">
+                    <button class="flex items-center gap-1 hover:text-brandGold transition-colors nav-hover-line">
+                        Combos <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
+                    </button>
+                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-52 bg-white border border-zinc-100 shadow-xl opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2">
+                        <a href="{% url 'store:product_list' %}?q=cake" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Cakes & Flowers</a>
+                        <a href="{% url 'store:product_list' %}?q=chocolate" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Chocolates</a>
+                    </div>
+                </div>
+
+                <!-- Same Day Delivery -->
+                <a href="{% url 'store:product_list' %}" class="hover:text-brandGold transition-colors nav-hover-line py-4">
+                    Same-Day Delivery
+                </a>
+            </nav>
+
+            <!-- Right: Minimalist Utility & Account -->
+            <div class="flex items-center gap-4">
+                <!-- Search Icon Panel -->
+                <form action="{% url 'store:product_list' %}" method="GET" class="relative hidden sm:flex items-center">
+                    <input type="search" placeholder="Search curations..." name="q" value="{{ request.GET.q|default:'' }}" 
+                           class="w-48 lg:w-56 bg-zinc-50 text-xs border border-zinc-200 rounded-full py-1.5 pl-4 pr-10 focus:outline-none focus:border-brandGold focus:bg-white transition-all text-brandCharcoal">
+                    <button type="submit" class="absolute right-3 text-zinc-400 hover:text-brandGold">
+                        <i data-lucide="search" class="w-4 h-4"></i>
+                    </button>
+                </form>
+
+                <!-- Search Mobile Trigger -->
+                <a href="{% url 'store:product_list' %}" class="sm:hidden text-brandCharcoal hover:text-brandGold p-1.5 transition-colors">
+                    <i data-lucide="search" class="w-5 h-5"></i>
+                </a>
+
+                <!-- Wishlist Link -->
+                <a href="{% url 'store:wishlist' %}" class="text-brandCharcoal hover:text-brandGold p-1.5 transition-colors relative" title="Wishlist">
+                    <i data-lucide="heart" class="w-5 h-5"></i>
+                </a>
+
+                <!-- Cart Drawer Trigger -->
+                <button onclick="openCartDrawer()" class="text-brandCharcoal hover:text-brandGold p-1.5 transition-colors relative" title="Shopping Bag">
+                    <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                    <span id="cart-badge" class="absolute -top-1 -right-1 bg-brandCharcoal text-white text-[9px] font-bold rounded-full w-4 h-4 flex items-center justify-center border border-white">
+                        {{ cart_total_items|default:0 }}
+                    </span>
+                </button>
+
+                <!-- Profile Dropdown -->
+                {% if user.is_authenticated %}
+                    <div class="relative group">
+                        <button class="flex items-center gap-1.5 text-xs tracking-wider uppercase font-semibold text-brandCharcoal hover:text-brandGold border border-zinc-200 rounded-full px-3 py-1.5 bg-zinc-50">
+                            <i data-lucide="user" class="w-3.5 h-3.5"></i>
+                            <span class="max-w-[70px] truncate hidden md:inline">{{ user.username }}</span>
+                        </button>
+                        <div class="absolute right-0 top-full mt-1.5 w-52 bg-white border border-zinc-100 shadow-xl opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2 text-xs uppercase tracking-wider font-medium">
+                            <a href="{% url 'accounts:profile' %}" class="px-4 py-2.5 hover:bg-zinc-50 hover:text-brandGold transition-colors flex items-center gap-2"><i data-lucide="user" class="w-3.5 h-3.5 opacity-60"></i> Profile</a>
+                            <a href="{% url 'accounts:wallet' %}" class="px-4 py-2.5 hover:bg-zinc-50 hover:text-brandGold transition-colors flex items-center gap-2"><i data-lucide="wallet" class="w-3.5 h-3.5 opacity-60"></i> Wallet (AED {{ user.wallet.balance|default:"0.00" }})</a>
+                            <a href="{% url 'orders:order_history' %}" class="px-4 py-2.5 hover:bg-zinc-50 hover:text-brandGold transition-colors flex items-center gap-2"><i data-lucide="shopping-cart" class="w-3.5 h-3.5 opacity-60"></i> Orders</a>
+                            {% if user.is_staff %}
+                                <a href="{% url 'admin:index' %}" target="_blank" class="px-4 py-2.5 hover:bg-zinc-50 hover:text-brandGold transition-colors flex items-center gap-2"><i data-lucide="shield" class="w-3.5 h-3.5 opacity-60"></i> Django Admin</a>
+                            {% endif %}
+                            <hr class="border-zinc-100 my-1">
+                            <a href="{% url 'accounts:logout' %}" class="px-4 py-2.5 text-red-500 hover:bg-red-50 transition-colors flex items-center gap-2"><i data-lucide="log-out" class="w-3.5 h-3.5"></i> Logout</a>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider">
+                        <a href="{% url 'accounts:login' %}" class="hover:text-brandGold transition-colors py-1 px-2 border border-transparent">Login</a>
+                        <a href="{% url 'accounts:register' %}" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors px-3 py-1.5 rounded-full">Register</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Elegant Minimalist Footer -->
+    <footer class="bg-zinc-50 border-t border-zinc-100 py-16 mt-auto select-none">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h5 class="font-serif text-3xl text-brandCharcoal tracking-widest mb-4">Rose & Ivy</h5>
+            <p class="text-zinc-400 text-xs md:text-sm max-w-lg mx-auto font-light leading-relaxed mb-6">
+                Curated luxurious bouquets, fresh single cuts, indoor plants, and floral gift combos delivered across UAE. Same-day shipping available.
+            </p>
+            <div class="flex justify-content-center items-center justify-center gap-6 mb-8 text-zinc-500">
+                <a href="#" class="hover:text-brandGold transition-colors"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+                <a href="#" class="hover:text-brandGold transition-colors"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                <a href="#" class="hover:text-brandGold transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+            </div>
+            <p class="text-zinc-400 text-[10px] tracking-widest uppercase mb-0">&copy; {% now "Y" %} Rose & Ivy. Licensed & Powered by Django 4.x.</p>
+        </div>
+    </footer>
+
+    <!-- Modern Slide-out Cart Drawer -->
+    <div id="cart-underlay" onclick="closeCartDrawer()" class="fixed inset-0 bg-black/40 z-40 hidden transition-opacity duration-300 opacity-0"></div>
+    <div id="cart-drawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl z-50 transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+        <!-- Drawer Header -->
+        <div class="p-6 border-b border-zinc-100 flex items-center justify-between">
+            <h3 class="font-serif text-2xl font-semibold tracking-wide text-brandCharcoal">Shopping Cart</h3>
+            <button onclick="closeCartDrawer()" class="text-zinc-400 hover:text-brandCharcoal transition-colors">
+                <i data-lucide="x" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Scrollable Cart Items Container -->
+        <div id="cart-drawer-items" class="flex-grow overflow-y-auto p-6 space-y-6">
+            <!-- Loading indicator / Dynamic Items go here -->
+            <div class="text-center py-12 text-zinc-400">
+                <i data-lucide="loader" class="w-8 h-8 animate-spin mx-auto mb-2 opacity-50"></i>
+                <p class="text-xs uppercase tracking-widest">Loading your items...</p>
+            </div>
+        </div>
+
+        <!-- Luxury Add-ons / Upsell Section -->
+        <div id="cart-drawer-upsell" class="p-6 bg-zinc-50 border-t border-zinc-100">
+            <h4 class="text-xs tracking-wider uppercase font-semibold text-brandCharcoal mb-3">Add Luxury Touches</h4>
+            <div class="space-y-3 text-xs">
+                <!-- Upsell: Balloon -->
+                <label class="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-brandGold transition-colors select-none">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="upsell-balloon-checkbox" onchange="toggleUpsellItem('helium-balloon', this.checked)" class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold">
+                        <div>
+                            <span class="font-semibold text-brandCharcoal block">Helium Balloon</span>
+                            <span class="text-[10px] text-zinc-400">Floating soft pastel tones</span>
+                        </div>
+                    </div>
+                    <span class="font-bold text-zinc-700 font-sans">+AED 45.00</span>
+                </label>
+
+                <!-- Upsell: Chocolates -->
+                <label class="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-brandGold transition-colors select-none">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="upsell-chocolates-checkbox" onchange="toggleUpsellItem('luxury-chocolates', this.checked)" class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold">
+                        <div>
+                            <span class="font-semibold text-brandCharcoal block">Luxury Chocolates</span>
+                            <span class="text-[10px] text-zinc-400">Box of Belgian chocolates</span>
+                        </div>
+                    </div>
+                    <span class="font-bold text-zinc-700 font-sans">+AED 115.00</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Drawer Footer -->
+        <div class="p-6 border-t border-zinc-100 bg-white space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="text-zinc-500 text-sm uppercase tracking-wider font-medium">Estimated Total</span>
+                <span id="cart-drawer-total" class="font-sans font-bold text-lg text-brandCharcoal">AED 0.00</span>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 text-xs uppercase tracking-widest font-semibold">
+                <a href="{% url 'cart:cart_detail' %}" class="border border-brandCharcoal text-brandCharcoal hover:bg-zinc-50 transition-colors py-3 text-center rounded-full">
+                    View Cart
+                </a>
+                <a href="{% url 'orders:checkout' %}" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors py-3 text-center rounded-full shadow-sm">
+                    Checkout
+                </a>
+            </div>
+            <p class="text-[10px] text-zinc-400 text-center uppercase tracking-wider font-light mt-2">
+                <i data-lucide="shield-check" class="w-3.5 h-3.5 inline mr-1 opacity-70"></i> 100% SECURE SSL TEST CHECKOUT
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-[9999] flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Global AJAX Cart Drawer JS Logic -->
+    <script>
+        // Track the dynamic upsell IDs
+        let currentUpsellProductIds = {};
+        let currentCartItems = [];
+
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-xl shadow-xl bg-white border border-zinc-100 flex items-center justify-between pointer-events-auto transform translate-y-2 opacity-0 transition-all duration-300 ease-out select-none`;
+            
+            let icon = 'check-circle';
+            let iconColor = 'text-green-500';
+            let borderStyle = 'border-l-4 border-l-green-500';
+            
+            if (type === 'danger' || type === 'error') {
+                icon = 'alert-triangle';
+                iconColor = 'text-red-500';
+                borderStyle = 'border-l-4 border-l-red-500';
+            } else if (type === 'info') {
+                icon = 'info';
+                iconColor = 'text-brandGold';
+                borderStyle = 'border-l-4 border-l-brandGold';
+            }
+            
+            toast.className += ` ${borderStyle}`;
+            toast.innerHTML = `
+                <div class="flex items-center gap-3">
+                    <i data-lucide="${icon}" class="w-5 h-5 ${iconColor}"></i>
+                    <span class="text-xs font-semibold text-brandCharcoal">${message}</span>
+                </div>
+                <button type="button" class="text-zinc-400 hover:text-brandCharcoal ml-4" onclick="this.parentElement.remove()">
+                    <i data-lucide="x" class="w-4 h-4"></i>
+                </button>
+            `;
+            
+            container.appendChild(toast);
+            lucide.createIcons();
+            
+            // Trigger animation
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+            
+            // Auto remove
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        // Drawer Controls
+        function openCartDrawer() {
+            const underlay = document.getElementById('cart-underlay');
+            const drawer = document.getElementById('cart-drawer');
+            
+            underlay.classList.remove('hidden');
+            setTimeout(() => {
+                underlay.classList.remove('opacity-0');
+                drawer.classList.remove('translate-x-full');
+            }, 10);
+            
+            fetchCartState();
+        }
+
+        function closeCartDrawer() {
+            const underlay = document.getElementById('cart-underlay');
+            const drawer = document.getElementById('cart-drawer');
+            
+            drawer.classList.add('translate-x-full');
+            underlay.classList.add('opacity-0');
+            
+            setTimeout(() => {
+                underlay.classList.add('hidden');
+            }, 300);
+        }
+
+        // Fetch Cart
+        function fetchCartState() {
+            fetch("{% url 'cart:cart_detail' %}", {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                refreshCartDrawer(data);
+            })
+            .catch(err => {
+                console.error("Failed to load cart state", err);
+            });
+        }
+
+        // Format Currency Helper
+        function formatAED(amount) {
+            return 'AED ' + parseFloat(amount).toFixed(2) + ' Inc. VAT';
+        }
+
+        // Refresh Cart DOM
+        function refreshCartDrawer(data) {
+            const badge = document.getElementById('cart-badge');
+            const total = document.getElementById('cart-drawer-total');
+            const itemsContainer = document.getElementById('cart-drawer-items');
+            
+            // Update counter badge & total
+            if (badge) badge.innerText = data.cart_total_items;
+            if (total) total.innerText = formatAED(data.cart_total_price);
+            
+            // Cache current state
+            currentUpsellProductIds = data.upsell_ids || {};
+            currentCartItems = data.items || [];
+            
+            // Synchronize upsell checkboxes
+            const balloonChecked = currentCartItems.some(item => item.product_slug === 'helium-balloon');
+            const chocolatesChecked = currentCartItems.some(item => item.product_slug === 'luxury-chocolates');
+            
+            document.getElementById('upsell-balloon-checkbox').checked = balloonChecked;
+            document.getElementById('upsell-chocolates-checkbox').checked = chocolatesChecked;
+            
+            // Render items list
+            if (currentCartItems.length === 0) {
+                itemsContainer.innerHTML = `
+                    <div class="text-center py-16 select-none">
+                        <i data-lucide="shopping-bag" class="w-12 h-12 text-zinc-300 mx-auto mb-4 stroke-1"></i>
+                        <p class="font-serif text-lg text-brandCharcoal font-medium">Your bag is empty</p>
+                        <p class="text-xs text-zinc-400 max-w-[200px] mx-auto mt-1 font-light">Explore our premium fresh arrangements to start curating.</p>
+                        <button onclick="closeCartDrawer()" class="mt-6 border border-brandCharcoal text-brandCharcoal hover:bg-zinc-50 transition-colors text-xs tracking-widest uppercase font-semibold px-6 py-2.5 rounded-full">
+                            Shop Stems
+                        </button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            let html = '<div class="space-y-5">';
+            currentCartItems.forEach(item => {
+                html += `
+                    <div class="flex items-start gap-4 pb-5 border-b border-zinc-100 last:border-0 last:pb-0">
+                        <div class="w-16 h-16 rounded bg-zinc-50 border border-zinc-100 overflow-hidden flex-shrink-0">
+                            <img src="${item.product_image}" alt="${item.product_name}" class="w-100 h-100 object-cover w-full h-full">
+                        </div>
+                        <div class="flex-grow select-none">
+                            <div class="flex items-start justify-between gap-2">
+                                <div>
+                                    <h5 class="text-xs font-semibold text-brandCharcoal hover:text-brandGold transition-colors tracking-wide leading-snug">
+                                        <a href="/products/${item.product_slug}/">${item.product_name}</a>
+                                    </h5>
+                                    <span class="text-[9px] uppercase tracking-widest text-brandGold font-semibold block mt-0.5">${formatAED(item.product_price)}</span>
+                                </div>
+                                <button onclick="removeCartItem(${item.id})" class="text-zinc-400 hover:text-red-500 transition-colors">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                            
+                            <!-- Quantity Controls inside drawer -->
+                            <div class="flex items-center justify-between mt-3">
+                                <div class="flex items-center border border-zinc-200 rounded-full bg-zinc-50 px-1 py-0.5">
+                                    <button onclick="updateCartQuantity(${item.id}, 'decrement')" class="w-5 h-5 rounded-full hover:bg-zinc-200 text-zinc-500 flex items-center justify-center font-bold text-xs">-</button>
+                                    <span class="w-6 text-center text-xs font-semibold text-brandCharcoal">${item.quantity}</span>
+                                    <button onclick="updateCartQuantity(${item.id}, 'increment')" class="w-5 h-5 rounded-full hover:bg-zinc-200 text-zinc-500 flex items-center justify-center font-bold text-xs">+</button>
+                                </div>
+                                <span class="font-sans font-bold text-xs text-zinc-700">${formatAED(item.subtotal)}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            itemsContainer.innerHTML = html;
+            lucide.createIcons();
+        }
+
+        // Toggle Upsell Checkboxes
+        function toggleUpsellItem(slug, isChecked) {
+            if (isChecked) {
+                const prodId = currentUpsellProductIds[slug];
+                if (!prodId) {
+                    showToast("Unable to add add-on. Product missing.", "error");
+                    return;
+                }
+                const formData = new FormData();
+                formData.append('quantity', '1');
+                
+                fetch(`/cart/add/${prodId}/`, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        refreshCartDrawer(data);
+                    }
+                })
+                .catch(err => console.error(err));
+            } else {
+                // Find matching item in cart
+                const cartItem = currentCartItems.find(item => item.product_slug === slug);
+                if (cartItem) {
+                    removeCartItem(cartItem.id);
+                }
+            }
+        }
+
+        // Remove item from Drawer
+        function removeCartItem(itemId) {
+            fetch(`/cart/remove/${itemId}/`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast(data.message, 'info');
+                    refreshCartDrawer(data);
+                }
+            })
+            .catch(err => console.error(err));
+        }
+
+        // Update quantity in Drawer
+        function updateCartQuantity(itemId, action) {
+            const formData = new FormData();
+            formData.append('action', action);
+            
+            fetch(`/cart/update/${itemId}/`, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(res => {
+                if (!res.ok) {
+                    return res.json().then(err => { throw new Error(err.message); });
+                }
+                return res.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    refreshCartDrawer(data);
+                }
+            })
+            .catch(err => {
+                showToast(err.message || "Failed to update quantity.", "error");
+            });
+        }
+
+        // CSRF Token Helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Intercept global Add forms
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            if (form.action && form.action.includes('/cart/add/')) {
+                e.preventDefault();
+                const formData = new FormData(form);
+                
+                fetch(form.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    }
+                })
+                .then(res => {
+                    if (!res.ok) {
+                        return res.json().then(err => { throw new Error(err.message); });
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        showToast(data.message, 'success');
+                        refreshCartDrawer(data);
+                        openCartDrawer();
+                    }
+                })
+                .catch(err => {
+                    showToast(err.message || 'Unable to add curation to cart.', 'error');
+                });
+            }
+        });
+
+        // Initialize Lucide Icons globally
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            
+            // Read Django messages and show as premium toasts
+            {% if messages %}
+                {% for message in messages %}
+                    showToast("{{ message }}", "{{ message.tags }}");
+                {% endfor %}
+            {% endif %}
+        });
+    </script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

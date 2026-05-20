@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Razorpay Simulator | Rose & Ivy{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-12 select-none">
+    <div class="bg-white border border-zinc-100 rounded-3xl shadow-xl overflow-hidden">
+        <!-- Razorpay Simulation Header -->
+        <div class="p-6 text-white text-center bg-gradient-to-br from-[#0c2340] to-[#1d428a]">
+            <h2 class="font-serif text-2xl font-medium text-white mb-1">Razorpay Payment Terminal</h2>
+            <span class="inline-block bg-white/20 text-[9px] uppercase tracking-widest font-bold px-3 py-1 rounded-full">Simulation Sandbox Mode</span>
+        </div>
+
+        <div class="p-6 space-y-6">
+            <div class="bg-blue-50/50 border border-blue-100 rounded-2xl p-4 text-xs text-blue-800 font-medium leading-relaxed flex gap-2.5">
+                <i data-lucide="info" class="w-5 h-5 stroke-2 flex-shrink-0 text-blue-600"></i>
+                <p>Since this project is running in sandbox mode, we have simulated the Razorpay interactive UPI interface to allow complete e-commerce testing.</p>
+            </div>
+
+            <!-- Transaction Details -->
+            <div class="bg-zinc-50 border border-zinc-100 rounded-2xl p-4 space-y-2 text-xs">
+                <div class="flex justify-between text-zinc-500 font-medium">
+                    <span>Merchant:</span>
+                    <span class="text-brandCharcoal font-semibold">Rose & Ivy</span>
+                </div>
+                <div class="flex justify-between text-zinc-500 font-medium">
+                    <span>Order Receipt:</span>
+                    <span class="text-brandCharcoal font-bold">#{{ order.id }}</span>
+                </div>
+                <div class="border-t border-zinc-200/60 pt-2.5 flex justify-between items-baseline">
+                    <span class="text-brandCharcoal font-semibold">Amount Charged:</span>
+                    <span class="font-sans font-extrabold text-base text-green-600">AED {{ order.total }}</span>
+                </div>
+            </div>
+
+            <!-- Contact Information -->
+            <div class="space-y-3">
+                <h4 class="text-[10px] uppercase tracking-widest font-bold text-zinc-400 border-b border-zinc-100 pb-1.5 mb-1.5">Prefill Billing Details</h4>
+                <div class="space-y-2 text-xs text-zinc-600 font-semibold">
+                    <p class="flex items-center gap-2"><i data-lucide="user" class="w-4 h-4 text-zinc-400 flex-shrink-0"></i> Customer Name: <span class="text-brandCharcoal font-bold ml-auto">{{ order.address.full_name }}</span></p>
+                    <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-zinc-400 flex-shrink-0"></i> Billing Email: <span class="text-brandCharcoal font-bold ml-auto">{{ order.user.email }}</span></p>
+                    <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 text-zinc-400 flex-shrink-0"></i> Contact Phone: <span class="text-brandCharcoal font-bold ml-auto">{{ order.address.phone }}</span></p>
+                </div>
+            </div>
+
+            <!-- Simulation form payload -->
+            <form action="{% url 'payments:razorpay_verify' %}" method="POST" class="pt-2">
+                {% csrf_token %}
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+                <input type="hidden" name="razorpay_order_id" value="mock_rzp_order_{{ order.id }}">
+                <input type="hidden" name="razorpay_payment_id" value="mock_rzp_payment_{{ order.id }}">
+                <input type="hidden" name="razorpay_signature" value="mock_rzp_signature_{{ order.id }}">
+                
+                <div class="flex flex-col gap-2.5 text-xs font-semibold uppercase tracking-widest">
+                    <button type="submit" name="mock_success" value="true" class="w-full bg-green-600 hover:bg-green-700 text-white transition-colors py-3.5 rounded-full text-center shadow flex items-center justify-center gap-1.5">
+                        <i data-lucide="shield-check" class="w-4 h-4"></i> Authorize UPI Success (success@razorpay)
+                    </button>
+                    
+                    <button type="submit" name="mock_success" value="false" class="w-full border border-zinc-200 text-zinc-500 hover:text-red-500 hover:border-red-200 transition-colors py-3.5 rounded-full text-center">
+                        Decline UPI Transaction (Fail)
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

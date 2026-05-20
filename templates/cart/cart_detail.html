@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Shopping Bag | Rose & Ivy{% endblock %}
+
+{% block content %}
+<div class="mb-10 select-none">
+    <nav class="flex text-xs uppercase tracking-widest text-zinc-400 gap-2 mb-4 font-semibold">
+        <a href="{% url 'store:home' %}" class="hover:text-brandGold transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-brandCharcoal">Shopping Bag</span>
+    </nav>
+    
+    <h1 class="font-serif text-3xl md:text-4xl font-medium text-brandCharcoal tracking-wide mb-2">Your Shopping Bag</h1>
+    <p class="text-zinc-400 text-xs font-light">Verify your luxury selections before proceeding to secure checkout</p>
+</div>
+
+{% if items %}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+    <!-- Cart Items List (Left Column) -->
+    <div class="lg:col-span-8 space-y-6">
+        <div class="bg-white border border-zinc-100 p-6 md:p-8 rounded-3xl shadow-sm space-y-6">
+            <div class="hidden md:grid grid-cols-12 border-b border-zinc-100 pb-3 text-[10px] uppercase tracking-widest font-bold text-zinc-400 select-none">
+                <div class="col-span-6">Product Details</div>
+                <div class="col-span-2 text-center">Price</div>
+                <div class="col-span-2 text-center">Quantity</div>
+                <div class="col-span-2 text-end">Total</div>
+            </div>
+            
+            <div class="divide-y divide-zinc-100">
+                {% for item in items %}
+                    <div class="grid grid-cols-1 md:grid-cols-12 items-center gap-4 py-6 first:pt-0 last:pb-0">
+                        <!-- Image and Details -->
+                        <div class="col-span-1 md:col-span-6 flex items-center gap-4">
+                            <div class="w-20 h-20 rounded bg-zinc-50 border border-zinc-100 overflow-hidden flex-shrink-0">
+                                {% if item.product.primary_image %}
+                                    <img src="{{ item.product.primary_image }}" alt="{{ item.product.name }}" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center text-zinc-300">
+                                        <i data-lucide="flower" class="w-8 h-8 stroke-1"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            <div class="select-none">
+                                <h5 class="text-sm font-semibold text-brandCharcoal hover:text-brandGold transition-colors tracking-wide leading-snug">
+                                    <a href="{% url 'store:product_detail' item.product.slug %}">{{ item.product.name }}</a>
+                                </h5>
+                                <span class="text-[9px] uppercase tracking-widest text-brandGold font-bold mt-1 block">{{ item.product.category.name }}</span>
+                                <a href="{% url 'cart:cart_remove' item.id %}" class="md:hidden text-red-500 hover:text-red-600 transition-colors text-[10px] uppercase tracking-widest font-semibold flex items-center gap-1 mt-2">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remove
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Price -->
+                        <div class="col-span-1 md:col-span-2 text-left md:text-center select-none">
+                            <span class="md:hidden text-zinc-400 text-[10px] uppercase tracking-wider block mb-1">Unit Price</span>
+                            <span class="font-sans font-bold text-xs md:text-sm text-zinc-600">AED {{ item.product.price }}</span>
+                        </div>
+
+                        <!-- Quantity -->
+                        <div class="col-span-1 md:col-span-2 flex justify-start md:justify-center">
+                            <div class="flex items-center border border-zinc-200 rounded-full bg-zinc-50 p-0.5">
+                                <!-- Decrement Form -->
+                                <form action="{% url 'cart:cart_update' item.id %}" method="POST" class="inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="decrement">
+                                    <button class="w-6 h-6 rounded-full hover:bg-zinc-200 text-zinc-500 flex items-center justify-center font-bold text-xs" type="submit">-</button>
+                                </form>
+                                
+                                <span class="w-8 text-center text-xs font-bold text-brandCharcoal font-sans">{{ item.quantity }}</span>
+                                
+                                <!-- Increment Form -->
+                                <form action="{% url 'cart:cart_update' item.id %}" method="POST" class="inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="increment">
+                                    <button class="w-6 h-6 rounded-full hover:bg-zinc-200 text-zinc-500 flex items-center justify-center font-bold text-xs" type="submit">+</button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Subtotal & Desktop Remove -->
+                        <div class="col-span-1 md:col-span-2 flex md:flex-col justify-between items-center md:items-end select-none">
+                            <span class="md:hidden text-zinc-400 text-[10px] uppercase tracking-wider">Subtotal</span>
+                            <div class="text-right">
+                                <span class="font-sans font-bold text-xs md:text-sm text-brandCharcoal block mb-1">AED {{ item.subtotal }}</span>
+                                <a href="{% url 'cart:cart_remove' item.id %}" class="hidden md:inline-flex text-zinc-400 hover:text-red-500 transition-colors text-[10px] uppercase tracking-widest font-semibold items-center gap-1">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> Remove
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- Bottom actions -->
+            <div class="border-t border-zinc-100 pt-6 flex justify-between select-none">
+                <a href="{% url 'store:product_list' %}" class="border border-zinc-200 text-brandCharcoal hover:bg-zinc-50 transition-colors text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-full flex items-center gap-1.5">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Continue Shopping
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Box (Right Column) -->
+    <div class="lg:col-span-4 select-none">
+        <div class="bg-white border border-zinc-100 p-6 md:p-8 rounded-3xl shadow-sm sticky top-28 space-y-6">
+            <h3 class="font-serif text-xl font-medium text-brandCharcoal mb-4 border-b border-zinc-50 pb-2">Order Summary</h3>
+            
+            <div class="space-y-4 text-xs font-medium text-zinc-500 uppercase tracking-widest border-b border-zinc-50 pb-4">
+                <div class="flex items-center justify-between">
+                    <span>Total Curations</span>
+                    <span class="font-sans font-bold text-brandCharcoal normal-case">{{ cart.total_items }} items</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span>Subtotal</span>
+                    <span class="font-sans font-bold text-brandCharcoal normal-case">AED {{ cart.total_price }}</span>
+                </div>
+            </div>
+            
+            <div class="space-y-4 pt-2">
+                <div class="flex items-center justify-between select-none">
+                    <span class="text-sm font-semibold uppercase tracking-wider text-brandCharcoal">Estimated Total</span>
+                    <span class="font-sans font-bold text-base md:text-lg text-brandCharcoal">AED {{ cart.total_price }}</span>
+                </div>
+                
+                <a href="{% url 'orders:checkout' %}" class="block w-full bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest py-4 text-center rounded-full shadow-sm">
+                    Proceed to Checkout
+                </a>
+            </div>
+            
+            <div class="text-center pt-2">
+                <p class="text-[10px] text-zinc-400 uppercase tracking-widest font-semibold flex items-center justify-center gap-1">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> SSL Protected Test Checkout
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Empty State -->
+<div class="py-20 max-w-lg mx-auto text-center select-none">
+    <div class="bg-white border border-zinc-100 p-12 rounded-3xl shadow-sm">
+        <i data-lucide="shopping-bag" class="w-16 h-16 text-zinc-300 mx-auto mb-6 stroke-1"></i>
+        <h3 class="font-serif text-2xl font-medium text-brandCharcoal mb-2">Your Bag is Empty</h3>
+        <p class="text-zinc-400 text-xs font-light mb-8">You haven't added any luxury flower arrangements to your cart yet.</p>
+        <a href="{% url 'store:product_list' %}" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded-full inline-block shadow-sm">
+            Browse Our Collection
+        </a>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

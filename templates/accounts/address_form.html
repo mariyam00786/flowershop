@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} | Rose & Ivy{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[80vh] py-12 px-4 select-none">
+    <div class="w-full max-w-2xl bg-white border border-zinc-100 p-8 md:p-10 rounded-3xl shadow-sm relative overflow-hidden">
+        <!-- Backdrop Subtle Accent Glow -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-brandChampagne/10 rounded-full blur-2xl"></div>
+        
+        <div class="text-left mb-8 border-b border-zinc-50 pb-4">
+            <h2 class="font-serif text-2xl font-medium text-brandCharcoal tracking-wide mb-1">{{ title }}</h2>
+            <p class="text-zinc-400 text-xs font-light">Input premium shipping & delivery credentials for Rose & Ivy floral orders.</p>
+        </div>
+
+        <form method="POST" class="space-y-6">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-100 rounded-2xl p-3 text-xs text-red-600 font-medium">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Row: Full Name & Phone -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <!-- Full Name -->
+                <div class="space-y-1.5">
+                    <label for="id_full_name" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">Full Name</label>
+                    <input type="text" name="full_name" id="id_full_name" required placeholder="Recipient's name"
+                           value="{{ form.full_name.value|default:'' }}"
+                           class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 px-5 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                    {% if form.full_name.errors %}
+                        <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.full_name.errors %}{{ error }}{% endfor %}</p>
+                    {% endif %}
+                </div>
+                
+                <!-- Phone -->
+                <div class="space-y-1.5">
+                    <label for="id_phone" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">Phone Number</label>
+                    <input type="text" name="phone" id="id_phone" required placeholder="e.g. +971 50 123 4567"
+                           value="{{ form.phone.value|default:'' }}"
+                           class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 px-5 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                    {% if form.phone.errors %}
+                        <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.phone.errors %}{{ error }}{% endfor %}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Street Address -->
+            <div class="space-y-1.5">
+                <label for="id_street" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">Street / Villa / Apartment Details</label>
+                <input type="text" name="street" id="id_street" required placeholder="e.g. Villa 14, St. 28, Jumeirah 1"
+                       value="{{ form.street.value|default:'' }}"
+                       class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 px-5 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                {% if form.street.errors %}
+                    <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.street.errors %}{{ error }}{% endfor %}</p>
+                {% endif %}
+            </div>
+
+            <!-- Row: City, State, Pincode -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <!-- City -->
+                <div class="space-y-1.5">
+                    <label for="id_city" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">City</label>
+                    <input type="text" name="city" id="id_city" required placeholder="e.g. Dubai"
+                           value="{{ form.city.value|default:'' }}"
+                           class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 px-5 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                    {% if form.city.errors %}
+                        <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.city.errors %}{{ error }}{% endfor %}</p>
+                    {% endif %}
+                </div>
+
+                <!-- State -->
+                <div class="space-y-1.5">
+                    <label for="id_state" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">Emirate / State</label>
+                    <input type="text" name="state" id="id_state" required placeholder="e.g. Dubai / Abu Dhabi"
+                           value="{{ form.state.value|default:'' }}"
+                           class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 px-5 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                    {% if form.state.errors %}
+                        <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.state.errors %}{{ error }}{% endfor %}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Pincode -->
+                <div class="space-y-1.5">
+                    <label for="id_pincode" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">Zip / Pincode</label>
+                    <input type="text" name="pincode" id="id_pincode" required placeholder="e.g. 00000 / Jumeirah"
+                           value="{{ form.pincode.value|default:'' }}"
+                           class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 px-5 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                    {% if form.pincode.errors %}
+                        <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.pincode.errors %}{{ error }}{% endfor %}</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Set as Default Checkbox -->
+            <div class="flex items-center gap-2.5 pt-2 pl-1">
+                <input type="checkbox" name="is_default" id="id_is_default" 
+                       {% if form.is_default.value %}checked{% endif %}
+                       class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold/40 bg-zinc-50">
+                <label for="id_is_default" class="text-xs text-zinc-400 font-semibold cursor-pointer">
+                    Set as default shipping address
+                </label>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="flex items-center justify-end gap-4 pt-6 border-t border-zinc-100">
+                <a href="{% url 'accounts:profile' %}" 
+                   class="border border-zinc-200 text-brandCharcoal hover:bg-zinc-50 transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded-full">
+                    Cancel
+                </a>
+                <button type="submit" 
+                        class="bg-brandCharcoal hover:bg-brandGold text-white transition-all duration-300 text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded-full shadow-sm hover:shadow flex items-center gap-1.5">
+                    <i data-lucide="check" class="w-4 h-4"></i> Save Address
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

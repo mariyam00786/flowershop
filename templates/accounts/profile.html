@@ -1,0 +1,297 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile | Rose & Ivy{% endblock %}
+
+{% block content %}
+<!-- Header & Breadcrumbs -->
+<div class="mb-8 select-none">
+    <nav class="flex text-xs uppercase tracking-widest text-zinc-400 gap-2 mb-4 font-semibold">
+        <a href="{% url 'store:home' %}" class="hover:text-brandGold transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-brandCharcoal">My Account</span>
+    </nav>
+    <h1 class="font-serif text-3xl md:text-4xl font-medium text-brandCharcoal tracking-wide mb-2">Account Dashboard</h1>
+    <p class="text-zinc-400 text-xs font-light">Manage your profile, delivery addresses, wishlists, and track orders.</p>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start select-none">
+    <!-- Left Column: User Profile Overview Card -->
+    <div class="lg:col-span-1 space-y-6">
+        <!-- Profile Details Card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-3xl shadow-sm text-center relative overflow-hidden">
+            <!-- Decorative Accent -->
+            <div class="absolute -top-10 -left-10 w-24 h-24 bg-brandChampagne/20 rounded-full blur-xl"></div>
+            
+            <div class="inline-flex items-center justify-center bg-zinc-50 border border-zinc-100 rounded-full mb-4 p-2 shadow-inner" style="width: 100px; height: 100px;">
+                {% if user.profile.avatar %}
+                    <img src="{{ user.profile.avatar.url }}" alt="Avatar" class="w-full h-full object-cover rounded-full">
+                {% else %}
+                    <i data-lucide="user" class="w-10 h-10 text-zinc-400 stroke-1"></i>
+                {% endif %}
+            </div>
+            
+            <h3 class="font-serif text-xl font-medium text-brandCharcoal mb-1">{{ user.first_name }} {{ user.last_name }}</h3>
+            <p class="text-zinc-400 text-xs font-light mb-3">@{{ user.username }}</p>
+            
+            <span class="inline-block text-[9px] uppercase tracking-widest font-bold bg-green-50 text-green-700 border border-green-100 px-3 py-1 rounded-full mb-6">
+                Active Member
+            </span>
+            
+            <hr class="border-zinc-100 mb-6">
+            
+            <div class="text-left space-y-3 text-xs text-zinc-500 font-medium">
+                <div class="flex items-center gap-3">
+                    <i data-lucide="mail" class="w-4 h-4 text-brandGold stroke-1.5"></i>
+                    <span class="truncate">{{ user.email }}</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <i data-lucide="phone" class="w-4 h-4 text-brandGold stroke-1.5"></i>
+                    <span>{{ user.profile.phone|default:"No phone added" }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Wallet Balance Summary -->
+        <div class="bg-brandCharcoal text-white p-6 rounded-3xl shadow-lg relative overflow-hidden">
+            <div class="absolute -top-12 -right-12 w-32 h-32 bg-brandGold/10 rounded-full blur-xl"></div>
+            
+            <div class="flex justify-between items-center mb-4">
+                <span class="text-[9px] uppercase tracking-widest font-bold text-zinc-400">Store Credit</span>
+                <i data-lucide="wallet" class="w-5 h-5 text-brandGold stroke-1.5"></i>
+            </div>
+            
+            <h2 class="font-serif text-2xl font-medium text-white mb-2">AED {{ user.wallet.balance|default:"0.00" }}</h2>
+            <p class="text-zinc-400 text-[10px] font-light mb-5">Seamless checkout using your virtual sandbox balance.</p>
+            
+            <a href="{% url 'accounts:wallet' %}" class="block text-center w-full bg-white text-brandCharcoal hover:bg-brandGold hover:text-white transition-colors text-xs font-semibold uppercase tracking-widest py-3.5 rounded-full shadow-sm">
+                Manage Wallet
+            </a>
+        </div>
+    </div>
+
+    <!-- Right Column: Tabs Dashboard -->
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white border border-zinc-100 rounded-3xl shadow-sm overflow-hidden">
+            <!-- Tabs Headers -->
+            <div class="flex border-b border-zinc-100 bg-zinc-50/50 p-2 gap-1 text-xs font-semibold uppercase tracking-widest select-none">
+                <button onclick="switchDashboardTab('orders')" id="tab-btn-orders" class="flex-1 text-center py-3.5 px-4 rounded-2xl transition-all duration-200 border text-brandCharcoal bg-white shadow-sm border-zinc-200/50 font-bold">
+                    <span class="flex items-center justify-center gap-2">
+                        <i data-lucide="package" class="w-4 h-4 text-brandGold"></i> Orders
+                    </span>
+                </button>
+                <button onclick="switchDashboardTab('addresses')" id="tab-btn-addresses" class="flex-1 text-center py-3.5 px-4 rounded-2xl transition-all duration-200 border text-zinc-400 border-transparent hover:text-brandCharcoal">
+                    <span class="flex items-center justify-center gap-2">
+                        <i data-lucide="map-pin" class="w-4 h-4"></i> Addresses
+                    </span>
+                </button>
+                <button onclick="switchDashboardTab('wishlist')" id="tab-btn-wishlist" class="flex-1 text-center py-3.5 px-4 rounded-2xl transition-all duration-200 border text-zinc-400 border-transparent hover:text-brandCharcoal">
+                    <span class="flex items-center justify-center gap-2">
+                        <i data-lucide="heart" class="w-4 h-4"></i> Wishlist
+                    </span>
+                </button>
+            </div>
+
+            <!-- Tabs Panels Content -->
+            <div class="p-6">
+                <!-- Orders Tab Panel -->
+                <div id="tab-panel-orders" class="space-y-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <h4 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide">Order History</h4>
+                    </div>
+                    
+                    {% if orders %}
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="border-b border-zinc-100 font-bold uppercase tracking-widest text-zinc-400 pb-3">
+                                        <th class="pb-3">Order ID</th>
+                                        <th class="pb-3">Date</th>
+                                        <th class="pb-3">Payment</th>
+                                        <th class="pb-3">Status</th>
+                                        <th class="pb-3">Total</th>
+                                        <th class="pb-3 text-end">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-zinc-50 text-zinc-600 font-medium">
+                                    {% for order in orders %}
+                                        <tr class="hover:bg-zinc-50/20 transition-colors">
+                                            <td class="py-4 text-brandCharcoal font-semibold">#{{ order.id }}</td>
+                                            <td class="py-4 text-zinc-400 font-light">{{ order.created_at|date:"M d, Y" }}</td>
+                                            <td class="py-4">
+                                                <span class="inline-block text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded {% if order.payment_status == 'PAID' %}bg-green-50 text-green-700 border border-green-100{% elif order.payment_status == 'COD_PENDING' %}bg-yellow-50 text-yellow-700 border border-yellow-100{% else %}bg-red-50 text-red-700 border border-red-100{% endif %}">
+                                                    {{ order.get_payment_status_display }}
+                                                </span>
+                                            </td>
+                                            <td class="py-4">
+                                                <span class="inline-block text-[9px] uppercase tracking-widest font-bold px-2 py-0.5 rounded bg-zinc-100 text-brandCharcoal border border-zinc-200">
+                                                    {{ order.order_status }}
+                                                </span>
+                                            </td>
+                                            <td class="py-4 font-sans font-bold text-brandCharcoal">AED {{ order.total }}</td>
+                                            <td class="py-4 text-end">
+                                                <a href="{% url 'orders:order_detail' order.id %}" class="inline-flex items-center gap-1 border border-zinc-200 hover:border-brandGold hover:text-brandGold transition-all text-[10px] uppercase tracking-wider px-3.5 py-1.5 rounded-full font-semibold">
+                                                    View Details <i data-lucide="chevron-right" class="w-3 h-3"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-16">
+                            <i data-lucide="shopping-bag" class="w-12 h-12 text-zinc-300 mx-auto mb-4 stroke-1"></i>
+                            <p class="text-zinc-400 text-xs font-light mb-4">You haven't placed any flower orders yet.</p>
+                            <a href="{% url 'store:product_list' %}" class="inline-block bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded-full">
+                                Shop Now
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Addresses Tab Panel -->
+                <div id="tab-panel-addresses" class="hidden space-y-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide">Delivery Addresses</h4>
+                        <a href="{% url 'accounts:address_add' %}" class="inline-flex items-center gap-1.5 bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold px-4 py-2.5 rounded-full">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Address
+                        </a>
+                    </div>
+                    
+                    {% if addresses %}
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {% for addr in addresses %}
+                                <div class="bg-zinc-50/50 border {% if addr.is_default %}border-brandGold{% else %}border-zinc-100{% endif %} rounded-2xl p-5 flex flex-col justify-between transition-all relative">
+                                    {% if addr.is_default %}
+                                        <span class="absolute top-4 right-4 bg-brandGold text-white text-[8px] uppercase tracking-wider px-2 py-0.5 rounded font-bold">
+                                            Default
+                                        </span>
+                                    {% endif %}
+                                    
+                                    <div>
+                                        <h6 class="text-xs uppercase tracking-wider font-bold text-brandCharcoal mb-3">{{ addr.full_name }}</h6>
+                                        <div class="space-y-1.5 text-zinc-500 text-[11px] leading-relaxed mb-4">
+                                            <p class="flex items-center gap-2">
+                                                <i data-lucide="phone" class="w-3 h-3 text-brandGold stroke-1.5"></i>
+                                                {{ addr.phone }}
+                                            </p>
+                                            <p class="flex items-start gap-2">
+                                                <i data-lucide="map-pin" class="w-3 h-3 text-brandGold stroke-1.5 mt-0.5"></i>
+                                                <span>{{ addr.street }}<br>{{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-3 justify-end border-t border-zinc-100 pt-3 text-[10px] uppercase tracking-wider font-semibold">
+                                        {% if not addr.is_default %}
+                                            <a href="{% url 'accounts:address_default' addr.id %}" class="text-zinc-400 hover:text-brandGold transition-colors me-auto">
+                                                Set Default
+                                            </a>
+                                        {% endif %}
+                                        <a href="{% url 'accounts:address_edit' addr.id %}" class="text-brandCharcoal hover:text-brandGold transition-colors">
+                                            Edit
+                                        </a>
+                                        <a href="{% url 'accounts:address_delete' addr.id %}" class="text-red-500 hover:text-red-600 transition-colors" onclick="return confirm('Are you sure you want to delete this address?')">
+                                            Delete
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-16">
+                            <i data-lucide="map-pin" class="w-12 h-12 text-zinc-300 mx-auto mb-4 stroke-1"></i>
+                            <p class="text-zinc-400 text-xs font-light mb-4">No shipping addresses added yet.</p>
+                            <a href="{% url 'accounts:address_add' %}" class="inline-block bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded-full">
+                                Add Address
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Wishlist Tab Panel -->
+                <div id="tab-panel-wishlist" class="hidden space-y-4">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide">Saved Stems & Curations</h4>
+                    </div>
+                    
+                    {% if wishlist %}
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {% for item in wishlist %}
+                                <div class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                                    <div class="aspect-square w-full bg-zinc-50 relative overflow-hidden">
+                                        <img src="{% if item.product.image_url %}{{ item.product.image_url }}{% elif item.product.image %}{{ item.product.image.url }}{% else %}{% static 'images/placeholder-flower.svg' %}{% endif %}" 
+                                             alt="{{ item.product.name }}" 
+                                             class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                                        
+                                        <a href="{% url 'store:wishlist_toggle' item.product.id %}?next={{ request.path }}" 
+                                           class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-zinc-100 p-2 rounded-full shadow-sm hover:scale-105 transition-all text-red-500 hover:text-zinc-400">
+                                            <i data-lucide="heart" class="w-4 h-4 fill-red-500"></i>
+                                        </a>
+                                    </div>
+                                    <div class="p-4 flex flex-col justify-between flex-grow">
+                                        <div>
+                                            <span class="text-[9px] uppercase tracking-widest font-bold text-brandGold block mb-1">
+                                                {{ item.product.category.name }}
+                                            </span>
+                                            <h6 class="text-xs font-semibold text-brandCharcoal leading-tight group-hover:text-brandGold transition-colors line-clamp-1 mb-2">
+                                                <a href="{% url 'store:product_detail' item.product.slug %}">{{ item.product.name }}</a>
+                                            </h6>
+                                            <p class="font-sans font-bold text-xs text-brandCharcoal mb-3">
+                                                AED {{ item.product.price }}
+                                            </p>
+                                        </div>
+                                        
+                                        <form action="{% url 'cart:cart_add' item.product.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit" class="w-full bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold py-2.5 rounded-full flex items-center justify-center gap-1.5">
+                                                <i data-lucide="shopping-cart" class="w-3.5 h-3.5"></i> Add to Cart
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-16">
+                            <i data-lucide="heart" class="w-12 h-12 text-zinc-300 mx-auto mb-4 stroke-1"></i>
+                            <p class="text-zinc-400 text-xs font-light mb-4">Your saved curations is currently empty.</p>
+                            <a href="{% url 'store:product_list' %}" class="inline-block bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded-full">
+                                Browse Flowers
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function switchDashboardTab(tabId) {
+        // Tab lists
+        const tabs = ['orders', 'addresses', 'wishlist'];
+        
+        tabs.forEach(t => {
+            const btn = document.getElementById(`tab-btn-${t}`);
+            const panel = document.getElementById(`tab-panel-${t}`);
+            
+            if (t === tabId) {
+                // Active button styling
+                btn.className = "flex-1 text-center py-3.5 px-4 rounded-2xl transition-all duration-200 border text-brandCharcoal bg-white shadow-sm border-zinc-200/50 font-bold";
+                btn.querySelector('i').className = `w-4 h-4 text-brandGold`;
+                // Show panel
+                panel.classList.remove('hidden');
+            } else {
+                // Inactive button styling
+                btn.className = "flex-1 text-center py-3.5 px-4 rounded-2xl transition-all duration-200 border text-zinc-400 border-transparent hover:text-brandCharcoal";
+                btn.querySelector('i').className = `w-4 h-4`;
+                // Hide panel
+                panel.classList.add('hidden');
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist | Rose & Ivy{% endblock %}
+
+{% block content %}
+<!-- Header & Navigation Breadcrumb -->
+<div class="mb-8 select-none">
+    <nav class="flex text-xs uppercase tracking-widest text-zinc-400 gap-2 mb-4 font-semibold">
+        <a href="{% url 'store:home' %}" class="hover:text-brandGold transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-brandCharcoal">Wishlist</span>
+    </nav>
+    <h1 class="font-serif text-3xl md:text-4xl font-medium text-brandCharcoal tracking-wide mb-2">My Saved Curations</h1>
+    <p class="text-zinc-400 text-xs font-light">Your handpicked premium floral arrangements. Keep them close, and add them directly to your shopping cart.</p>
+</div>
+
+<!-- Main Wishlist Layout -->
+<div class="select-none">
+    {% if wishlist_items %}
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {% for item in wishlist_items %}
+                <div class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                    <!-- Image wrapper & Wishlist Bookmark -->
+                    <div class="aspect-square w-full bg-zinc-50 relative overflow-hidden">
+                        <img src="{{ item.product.primary_image }}" 
+                             alt="{{ item.product.name }}" 
+                             class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                        
+                        <!-- Toggle / Remove Wishlist Bookmark -->
+                        <a href="{% url 'store:wishlist_toggle' item.product.id %}?next={{ request.path }}" 
+                           class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-zinc-100 text-red-500 hover:bg-zinc-100 transition-all p-2 rounded-full shadow-sm hover:scale-105 z-10" 
+                           title="Remove curation">
+                            <i data-lucide="heart" class="w-4 h-4 fill-red-500 text-red-500"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-4 md:p-5 flex-grow flex flex-col justify-between">
+                        <div class="mb-4">
+                            <span class="text-[9px] uppercase tracking-widest text-brandGold font-bold block mb-1.5">{{ item.product.category.name }}</span>
+                            <h4 class="font-serif text-sm md:text-base font-semibold text-brandCharcoal hover:text-brandGold transition-colors truncate">
+                                <a href="{% url 'store:product_detail' item.product.slug %}">{{ item.product.name }}</a>
+                            </h4>
+                            
+                            <div class="flex items-center gap-1 mt-2">
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-brandGold text-brandGold"></i>
+                                <span class="text-[10px] text-zinc-400 font-semibold mt-0.5">({{ item.product.average_rating|default:"0.0" }})</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-3 border-t border-zinc-50 flex items-center justify-between gap-2">
+                            <span class="font-sans font-bold text-xs md:text-sm text-brandCharcoal">AED {{ item.product.price }} Inc. VAT</span>
+                            {% if item.product.stock > 0 %}
+                                <form action="{% url 'cart:cart_add' item.product.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="quantity" value="1">
+                                    <button type="submit" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold px-4 py-2 rounded-full flex items-center gap-1.5">
+                                        <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> Add
+                                    </button>
+                                </form>
+                            {% else %}
+                                <span class="text-[9px] uppercase tracking-widest font-bold text-red-500 bg-red-50 border border-red-100 px-3 py-1.5 rounded-full">
+                                    Out of stock
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <!-- Empty state design -->
+        <div class="py-20 bg-zinc-50 border border-dashed border-zinc-200 rounded-3xl text-center">
+            <i data-lucide="heart" class="w-12 h-12 text-zinc-300 mx-auto mb-4 stroke-1"></i>
+            <h4 class="font-serif text-lg text-brandCharcoal font-semibold mb-1">Your Wishlist is Empty</h4>
+            <p class="text-zinc-400 text-xs font-light max-w-xs mx-auto mb-6">You haven't saved any luxurious blooms or signature arrangements yet.</p>
+            <a href="{% url 'store:product_list' %}" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-full">
+                Discover Curations
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

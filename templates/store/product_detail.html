@@ -1,0 +1,277 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} | Rose & Ivy{% endblock %}
+
+{% block content %}
+<!-- Elegant Breadcrumbs -->
+<div class="mb-10 select-none">
+    <nav class="flex text-xs uppercase tracking-widest text-zinc-400 gap-2 mb-4 font-semibold">
+        <a href="{% url 'store:home' %}" class="hover:text-brandGold transition-colors">Home</a>
+        <span>/</span>
+        <a href="{% url 'store:product_list' %}" class="hover:text-brandGold transition-colors">Shop</a>
+        <span>/</span>
+        <span class="text-brandCharcoal">{{ product.name }}</span>
+    </nav>
+</div>
+
+<!-- Product Details Grid (Split Gallery Left, Typography Right) -->
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 mb-16">
+    <!-- Gallery Image (Left Column) -->
+    <div class="bg-white border border-zinc-100 p-4 rounded-3xl shadow-sm flex flex-col justify-between">
+        <!-- Focus Image -->
+        <div class="aspect-square w-full rounded-2xl overflow-hidden bg-zinc-50 relative">
+            <img id="primary-gallery-img" 
+                 src="{% if product.image_url %}{{ product.image_url }}{% elif product.image %}{{ product.image.url }}{% else %}{% static 'images/placeholder-flower.svg' %}{% endif %}" 
+                 alt="{{ product.name }}" 
+                 class="w-full h-full object-cover transition-all duration-300">
+            
+            <!-- Bookmark Heart Overlay -->
+            <a href="{% url 'store:wishlist_toggle' product.id %}?next={{ request.path }}" 
+               class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm border border-zinc-100 p-2.5 rounded-full shadow-sm hover:scale-105 transition-all text-brandCharcoal hover:text-red-500 z-10">
+                <i data-lucide="heart" class="w-5 h-5 {% if in_wishlist %}fill-red-500 text-red-500{% endif %}"></i>
+            </a>
+        </div>
+
+        <!-- Gallery Thumbnails (if multiple exist) -->
+        {% if images.count > 1 %}
+            <div class="flex items-center gap-3 overflow-x-auto mt-4 py-1 select-none">
+                {% for img in images %}
+                    <img src="{{ img.image.url }}" alt="Thumbnail curation" 
+                         class="w-16 h-16 rounded-lg object-cover cursor-pointer border-2 {% if img.is_primary %}border-brandGold{% else %}border-transparent hover:border-brandGold/50{% endif %} transition-all" 
+                         onclick="swapGalleryImage(this)">
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    <!-- Product Meta & Checkout Selector (Right Column) -->
+    <div class="flex flex-col justify-center select-none">
+        <span class="text-[10px] uppercase tracking-[0.2em] font-bold text-brandGold mb-3 block">
+            {{ product.category.name }}
+        </span>
+        <h1 class="font-serif text-3xl md:text-4xl font-medium text-brandCharcoal mb-4 leading-tight">
+            {{ product.name }}
+        </h1>
+        
+        <!-- Ratings Verified Label -->
+        <div class="flex items-center gap-2 mb-6 text-xs text-zinc-500 font-medium">
+            <div class="flex items-center gap-0.5">
+                <i data-lucide="star" class="w-3.5 h-3.5 fill-brandGold text-brandGold"></i>
+                <span class="font-bold text-brandCharcoal ml-1 mt-0.5">{{ product.average_rating }}</span>
+            </div>
+            <span class="text-zinc-300">|</span>
+            <span>({{ product.reviews_count }} verified reviews)</span>
+        </div>
+
+        <!-- AED Price Block -->
+        <div class="font-sans font-bold text-2xl text-brandCharcoal mb-6">
+            AED {{ product.price }} <span class="text-xs text-zinc-400 font-medium font-sans block mt-1 tracking-wider uppercase">Inclusive of all local taxes & VAT</span>
+        </div>
+
+        <!-- Description Paragraph -->
+        <p class="text-zinc-500 text-xs md:text-sm font-light leading-relaxed mb-8 border-t border-zinc-100 pt-6">
+            {{ product.description }}
+        </p>
+
+        <!-- Checkout Actions Box -->
+        <div class="border-t border-zinc-100 pt-6">
+            {% if product.stock > 0 %}
+                <span class="inline-flex items-center gap-1.5 text-[9px] uppercase tracking-widest font-bold text-green-600 bg-green-50 px-3 py-1.5 rounded-full mb-6">
+                    <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> 
+                    Fresh In Stock (${product.stock} curations available)
+                </span>
+                
+                <form action="{% url 'cart:cart_add' product.id %}" method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <div class="flex flex-wrap items-center gap-4">
+                        <!-- Custom Quantities Selector -->
+                        <div class="flex items-center border border-zinc-200 rounded-full bg-zinc-50 p-1">
+                            <button type="button" onclick="decrementQty()" 
+                                    class="w-8 h-8 rounded-full hover:bg-zinc-200 text-zinc-600 font-bold flex items-center justify-center transition-colors">-</button>
+                            <input type="number" id="qty-selector" name="quantity" 
+                                   class="w-12 text-center bg-transparent border-none focus:outline-none text-xs font-bold text-brandCharcoal font-sans" 
+                                   value="1" min="1" max="{{ product.stock }}" readonly>
+                            <button type="button" onclick="incrementQty({{ product.stock }})" 
+                                    class="w-8 h-8 rounded-full hover:bg-zinc-200 text-zinc-600 font-bold flex items-center justify-center transition-colors">+</button>
+                        </div>
+                        
+                        <!-- CTA Gold button -->
+                        <button type="submit" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-3.5 rounded-full flex items-center gap-2 shadow-sm">
+                            <i data-lucide="shopping-bag" class="w-4 h-4"></i> Add to Bag
+                        </button>
+                    </div>
+                </form>
+            {% else %}
+                <span class="inline-flex items-center gap-1.5 text-[9px] uppercase tracking-widest font-bold text-red-500 bg-red-50 px-3 py-1.5 rounded-full mb-4">
+                    Out of Stock
+                </span>
+                <p class="text-zinc-400 text-xs font-light">We are hard at work harvesting new batches. Check back very soon!</p>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Customer Reviews Section -->
+<section class="bg-white border border-zinc-100 p-8 md:p-12 rounded-3xl shadow-sm mb-16">
+    <h3 class="font-serif text-2xl font-medium text-brandCharcoal mb-8 border-b border-zinc-100 pb-4 select-none">Customer Reviews</h3>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <!-- Reviews list (Left column) -->
+        <div class="lg:col-span-7 space-y-6 lg:border-r lg:border-zinc-100 lg:pr-8">
+            {% if reviews %}
+                <div class="divide-y divide-zinc-100 space-y-6">
+                    {% for rev in reviews %}
+                        <div class="pt-6 first:pt-0">
+                            <div class="flex items-center justify-between gap-2 mb-2 select-none">
+                                <h6 class="text-xs font-bold text-brandCharcoal uppercase tracking-wider">{{ rev.user.username }}</h6>
+                                <span class="text-[10px] text-zinc-400 font-semibold">{{ rev.created_at|date:"M d, Y" }}</span>
+                            </div>
+                            <!-- Stars -->
+                            <div class="flex gap-0.5 mb-2.5 select-none">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= rev.rating %}
+                                        <i data-lucide="star" class="w-3.5 h-3.5 fill-brandGold text-brandGold"></i>
+                                    {% else %}
+                                        <i data-lucide="star" class="w-3.5 h-3.5 text-zinc-200"></i>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                            <p class="text-zinc-500 text-xs md:text-sm font-light leading-relaxed">
+                                {{ rev.comment }}
+                            </p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-12 select-none">
+                    <i data-lucide="message-square" class="w-10 h-10 text-zinc-300 mx-auto mb-3 stroke-1"></i>
+                    <p class="text-zinc-400 text-xs font-light">No reviews yet for this arrangement. Be the first to share your thoughts!</p>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Add Review Form (Right column) -->
+        <div class="lg:col-span-5 select-none">
+            <h5 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal mb-4 flex items-center gap-2">
+                <i data-lucide="edit-3" class="w-3.5 h-3.5 text-brandGold"></i> Write A Review
+            </h5>
+            
+            {% if user.is_authenticated %}
+                <form action="{% url 'store:add_review' product.id %}" method="POST" class="space-y-4 text-xs font-medium text-zinc-500 uppercase tracking-widest">
+                    {% csrf_token %}
+                    <div>
+                        <label for="rating-select" class="block text-zinc-400 mb-2">Overall Rating</label>
+                        <select id="rating-select" name="rating" required 
+                                class="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-3 focus:outline-none focus:border-brandGold text-brandCharcoal font-semibold">
+                            <option value="" disabled selected>Choose Star Count</option>
+                            <option value="5">★★★★★ Excellent</option>
+                            <option value="4">★★★★ Good</option>
+                            <option value="3">★★★ Average</option>
+                            <option value="2">★★ Poor</option>
+                            <option value="1">★ Terrible</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label for="comment-text" class="block text-zinc-400 mb-2">Review Details</label>
+                        <textarea id="comment-text" name="comment" rows="4" placeholder="Share your premium floral experience..." required 
+                                  class="w-full bg-zinc-50 border border-zinc-200 rounded-xl p-4 focus:outline-none focus:border-brandGold text-brandCharcoal normal-case font-normal"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold py-3.5 rounded-full">
+                        Submit Verified Review
+                    </button>
+                </form>
+            {% else %}
+                <div class="bg-zinc-50 border border-zinc-100 p-6 rounded-2xl text-center">
+                    <i data-lucide="lock" class="w-8 h-8 text-zinc-400 mx-auto mb-3 stroke-1"></i>
+                    <p class="text-zinc-400 text-xs font-light mb-4">Please log into your account to leave a verified review.</p>
+                    <a href="{% url 'accounts:login' %}?next={{ request.path }}" class="inline-block bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold px-6 py-2.5 rounded-full">
+                        Login Account
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- You Might Also Adore Section (Related Products) -->
+{% if related_products %}
+<section class="mb-16">
+    <div class="text-center mb-10 select-none">
+        <h3 class="font-serif text-2xl font-medium text-brandCharcoal tracking-wide mb-2">You Might Also Adore</h3>
+        <p class="text-zinc-400 text-xs font-light">Hand-selected related floral creations in the same collection</p>
+        <div class="w-12 h-[1px] bg-brandGold mx-auto mt-2"></div>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        {% for prod in related_products %}
+            <div class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                <div class="aspect-square w-full bg-zinc-50 relative overflow-hidden">
+                    <img src="{% if prod.image_url %}{{ prod.image_url }}{% elif prod.image %}{{ prod.image.url }}{% else %}{% static 'images/placeholder-flower.svg' %}{% endif %}" alt="{{ prod.name }}" 
+                         class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                    <a href="{% url 'store:wishlist_toggle' prod.id %}?next={{ request.path }}" 
+                       class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-zinc-100 text-brandCharcoal hover:bg-red-50 hover:text-red-500 transition-all p-2 rounded-full shadow-sm hover:scale-105 z-10">
+                        <i data-lucide="heart" class="w-4 h-4 animate-none"></i>
+                    </a>
+                </div>
+                <div class="p-4 flex-grow flex flex-col justify-between">
+                    <div>
+                        <span class="text-[9px] uppercase tracking-widest text-brandGold font-bold block mb-1">{{ prod.category.name }}</span>
+                        <h4 class="font-serif text-sm font-semibold text-brandCharcoal hover:text-brandGold transition-colors truncate">
+                            <a href="{% url 'store:product_detail' prod.slug %}">{{ prod.name }}</a>
+                        </h4>
+                    </div>
+                    <div class="pt-3 mt-3 border-t border-zinc-50 flex items-center justify-between gap-2 select-none">
+                        <span class="font-sans font-bold text-xs text-brandCharcoal">AED {{ prod.price }} Inc. VAT</span>
+                        <form action="{% url 'cart:cart_add' prod.id %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="text-brandCharcoal hover:text-brandGold transition-colors p-1" title="Add to bag">
+                                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- Client Side Gallery Controls -->
+<script>
+    function swapGalleryImage(thumbnailImg) {
+        const primary = document.getElementById('primary-gallery-img');
+        if (primary) {
+            primary.src = thumbnailImg.src;
+        }
+        
+        // Remove active class from all, add to clicked
+        const thumbs = document.querySelectorAll('.gallery-thumbnail');
+        thumbs.forEach(t => {
+            t.classList.remove('border-brandGold');
+            t.classList.add('border-transparent');
+        });
+        thumbnailImg.classList.remove('border-transparent');
+        thumbnailImg.classList.add('border-brandGold');
+    }
+
+    function incrementQty(maxStock) {
+        const input = document.getElementById('qty-selector');
+        let current = parseInt(input.value);
+        if (current < maxStock) {
+            input.value = current + 1;
+        }
+    }
+
+    function decrementQty() {
+        const input = document.getElementById('qty-selector');
+        let current = parseInt(input.value);
+        if (current > 1) {
+            input.value = current - 1;
+        }
+    }
+</script>
+{% endblock %}

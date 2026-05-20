@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shop Curations | Rose & Ivy{% endblock %}
+
+{% block content %}
+<!-- Header & Navigation Breadcrumb -->
+<div class="mb-10 select-none">
+    <nav class="flex text-xs uppercase tracking-widest text-zinc-400 gap-2 mb-4 font-semibold">
+        <a href="{% url 'store:home' %}" class="hover:text-brandGold transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-brandCharcoal">Catalog</span>
+    </nav>
+    
+    <h1 class="font-serif text-3xl md:text-4xl font-medium text-brandCharcoal tracking-wide mb-2">Our Floral Collections</h1>
+    {% if search_query %}
+        <p class="text-zinc-400 text-xs font-light">Showing search results for "<span class="font-semibold text-brandCharcoal">{{ search_query }}</span>"</p>
+    {% elif current_category %}
+        <p class="text-zinc-400 text-xs font-light">Explore our curated collection of "<span class="font-semibold text-brandCharcoal">{{ current_category.name }}</span>"</p>
+    {% else %}
+        <p class="text-zinc-400 text-xs font-light">Explore our handpicked premium blooms, bespoke arrangements, and luxury gifts.</p>
+    {% endif %}
+</div>
+
+<!-- Main Catalog Layout (Sidebar Filters + Products Grid) -->
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+    <!-- Filters Sidebar -->
+    <aside class="space-y-8 select-none">
+        <!-- Categories Filters -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm">
+            <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal mb-4 flex items-center gap-2">
+                <i data-lucide="filter" class="w-3.5 h-3.5 text-brandGold"></i> Collections
+            </h4>
+            <div class="flex flex-col gap-2.5 text-xs font-medium text-zinc-500 uppercase tracking-widest">
+                <a href="{% url 'store:product_list' %}" class="px-3 py-2.5 rounded-lg border {% if not current_category %}border-brandGold text-brandGold bg-brandChampagne/10{% else %}border-zinc-100 hover:border-brandGold hover:text-brandGold bg-white{% endif %} transition-colors flex items-center justify-between">
+                    <span>All Flowers</span>
+                    <i data-lucide="chevron-right" class="w-3 h-3 opacity-60"></i>
+                </a>
+                {% for cat in categories %}
+                    <a href="{% url 'store:product_list' %}?category={{ cat.slug }}" class="px-3 py-2.5 rounded-lg border {% if current_category.slug == cat.slug %}border-brandGold text-brandGold bg-brandChampagne/10{% else %}border-zinc-100 hover:border-brandGold hover:text-brandGold bg-white{% endif %} transition-colors flex items-center justify-between">
+                        <span>{{ cat.name }}</span>
+                        <i data-lucide="chevron-right" class="w-3 h-3 opacity-60"></i>
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Price Range Filter Card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm">
+            <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal mb-4 flex items-center gap-2">
+                <i data-lucide="sliders" class="w-3.5 h-3.5 text-brandGold"></i> Price (AED)
+            </h4>
+            <form method="GET" action="{% url 'store:product_list' %}" class="space-y-4">
+                {% if current_category %}
+                    <input type="hidden" name="category" value="{{ current_category.slug }}">
+                {% endif %}
+                {% if search_query %}
+                    <input type="hidden" name="q" value="{{ search_query }}">
+                {% endif %}
+                
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div>
+                        <label for="min_price" class="text-zinc-400 block mb-1">Min</label>
+                        <input type="number" id="min_price" name="min_price" value="{{ min_price|default:'' }}" placeholder="0" 
+                               class="w-full bg-zinc-50 border border-zinc-200 rounded-lg p-2 focus:outline-none focus:border-brandGold text-brandCharcoal font-semibold">
+                    </div>
+                    <div>
+                        <label for="max_price" class="text-zinc-400 block mb-1">Max</label>
+                        <input type="number" id="max_price" name="max_price" value="{{ max_price|default:'' }}" placeholder="1000" 
+                               class="w-full bg-zinc-50 border border-zinc-200 rounded-lg p-2 focus:outline-none focus:border-brandGold text-brandCharcoal font-semibold">
+                    </div>
+                </div>
+                
+                <button type="submit" class="w-full bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold py-3 rounded-full">
+                    Apply Filter
+                </button>
+                
+                {% if min_price or max_price %}
+                    <a href="{% url 'store:product_list' %}{% if current_category %}?category={{ current_category.slug }}{% endif %}" 
+                       class="block text-center text-xs font-semibold text-red-500 hover:text-red-600 transition-colors pt-2">
+                        Clear Price Filter
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+    </aside>
+
+    <!-- Product Grid -->
+    <main class="lg:col-span-3">
+        {% if products %}
+            <!-- Mobile 2 cols, Tablet 3 cols, Desktop 3 cols -->
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                {% for prod in products %}
+                    <div class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                        <!-- Image wrapper & Wishlist Bookmark -->
+                        <div class="aspect-square w-full bg-zinc-50 relative overflow-hidden">
+                            <img src="{% if prod.image_url %}{{ prod.image_url }}{% elif prod.image %}{{ prod.image.url }}{% else %}{% static 'images/placeholder-flower.svg' %}{% endif %}" 
+                                 alt="{{ prod.name }}" 
+                                 class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                            
+                            <a href="{% url 'store:wishlist_toggle' prod.id %}?next={{ request.get_full_path }}" 
+                               class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-zinc-100 text-brandCharcoal hover:bg-red-50 hover:text-red-500 transition-all p-2 rounded-full shadow-sm hover:scale-105 z-10" 
+                               title="Bookmark curation">
+                                <i data-lucide="heart" class="w-4 h-4"></i>
+                            </a>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div class="p-4 md:p-5 flex-grow flex flex-col justify-between">
+                            <div class="mb-4">
+                                <span class="text-[9px] uppercase tracking-widest text-brandGold font-bold block mb-1.5">{{ prod.category.name }}</span>
+                                <h4 class="font-serif text-sm md:text-base font-semibold text-brandCharcoal hover:text-brandGold transition-colors truncate">
+                                    <a href="{% url 'store:product_detail' prod.slug %}">{{ prod.name }}</a>
+                                </h4>
+                                
+                                <div class="flex items-center gap-1 mt-2">
+                                    <i data-lucide="star" class="w-3.5 h-3.5 fill-brandGold text-brandGold"></i>
+                                    <span class="text-[10px] text-zinc-400 font-semibold mt-0.5">({{ prod.average_rating|default:"0.0" }})</span>
+                                </div>
+                            </div>
+                            
+                            <div class="pt-3 border-t border-zinc-50 flex items-center justify-between gap-2 select-none">
+                                <span class="font-sans font-bold text-xs md:text-sm text-brandCharcoal">AED {{ prod.price }} Inc. VAT</span>
+                                {% if prod.stock > 0 %}
+                                    <form action="{% url 'cart:cart_add' prod.id %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold px-4 py-2 rounded-full flex items-center gap-1.5">
+                                            <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> Add
+                                        </button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-[9px] uppercase tracking-widest font-bold text-red-500 bg-red-50 border border-red-100 px-3 py-1.5 rounded-full select-none">
+                                        Out of stock
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Empty state design -->
+            <div class="py-20 bg-zinc-50 border border-dashed border-zinc-200 rounded-3xl text-center select-none">
+                <i data-lucide="frown" class="w-12 h-12 text-zinc-300 mx-auto mb-4 stroke-1"></i>
+                <h4 class="font-serif text-lg text-brandCharcoal font-semibold mb-1">No Curations Found</h4>
+                <p class="text-zinc-400 text-xs font-light max-w-xs mx-auto mb-6">We couldn't find any premium flower arrangements matching your filter query.</p>
+                <a href="{% url 'store:product_list' %}" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-full">
+                    Reset Filter Parameters
+                </a>
+            </div>
+        {% endif %}
+    </main>
+</div>
+{% endblock %}

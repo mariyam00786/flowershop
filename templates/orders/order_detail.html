@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Details #{{ order.id }} | Rose & Ivy{% endblock %}
+
+{% block content %}
+<!-- Header & Breadcrumbs -->
+<div class="mb-8 select-none">
+    <nav class="flex text-xs uppercase tracking-widest text-zinc-400 gap-2 mb-4 font-semibold">
+        <a href="{% url 'store:home' %}" class="hover:text-brandGold transition-colors">Home</a>
+        <span>/</span>
+        <a href="{% url 'orders:order_history' %}" class="hover:text-brandGold transition-colors">Order History</a>
+        <span>/</span>
+        <span class="text-brandCharcoal">Order #{{ order.id }}</span>
+    </nav>
+    <div class="flex flex-wrap justify-between items-center gap-4">
+        <div>
+            <h1 class="font-serif text-3xl md:text-4xl font-medium text-brandCharcoal tracking-wide mb-1">Order #{{ order.id }} Details</h1>
+            <p class="text-zinc-400 text-xs font-light">Placed on {{ order.created_at|date:"M d, Y \a\t H:i" }}</p>
+        </div>
+        <a href="{% url 'orders:order_history' %}" class="inline-flex items-center gap-1.5 border border-zinc-200 hover:bg-zinc-50 transition-colors text-[10px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-full">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Back to History
+        </a>
+    </div>
+</div>
+
+<!-- Shipment Delivery Tracker Card -->
+<div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm mb-8 select-none">
+    <h3 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide flex items-center gap-2 mb-6 border-b border-zinc-50 pb-3">
+        <i data-lucide="truck" class="w-5 h-5 text-brandGold stroke-1"></i> Delivery Progress Tracker
+    </h3>
+
+    {% with status=order.order_status %}
+    <div class="relative flex items-center justify-between w-full mt-6 mb-8 px-4">
+        <!-- Background track line -->
+        <div class="absolute top-[22px] left-0 right-0 h-1 bg-zinc-100 -z-10"></div>
+        <!-- Active fill line -->
+        <div class="absolute top-[22px] left-0 h-1 bg-brandGold transition-all duration-500 -z-10" style="width: 
+            {% if status == 'Pending' %}0%
+            {% elif status == 'Processing' %}33.33%
+            {% elif status == 'Shipped' %}66.66%
+            {% elif status == 'Delivered' %}100%{% endif %};"></div>
+
+        <!-- Step 1: Pending -->
+        <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-all duration-300
+                {% if status == 'Pending' %}bg-white border-brandGold text-brandGold ring-4 ring-brandGold/10
+                {% else %}bg-brandGold text-white{% endif %}">
+                <i data-lucide="receipt" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-widest font-bold mt-2.5 
+                {% if status == 'Pending' %}text-brandGold{% else %}text-brandCharcoal{% endif %}">Order Placed</span>
+        </div>
+
+        <!-- Step 2: Processing -->
+        <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-all duration-300
+                {% if status == 'Processing' %}bg-white border-brandGold text-brandGold ring-4 ring-brandGold/10
+                {% elif status == 'Shipped' or status == 'Delivered' %}bg-brandGold text-white
+                {% else %}bg-zinc-100 border-zinc-100 text-zinc-400{% endif %}">
+                <i data-lucide="flower" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-widest font-bold mt-2.5 
+                {% if status == 'Processing' %}text-brandGold
+                {% elif status == 'Shipped' or status == 'Delivered' %}text-brandCharcoal
+                {% else %}text-zinc-400{% endif %}">Preparing stems</span>
+        </div>
+
+        <!-- Step 3: Shipped -->
+        <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-all duration-300
+                {% if status == 'Shipped' %}bg-white border-brandGold text-brandGold ring-4 ring-brandGold/10
+                {% elif status == 'Delivered' %}bg-brandGold text-white
+                {% else %}bg-zinc-100 border-zinc-100 text-zinc-400{% endif %}">
+                <i data-lucide="truck" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-widest font-bold mt-2.5 
+                {% if status == 'Shipped' %}text-brandGold
+                {% elif status == 'Delivered' %}text-brandCharcoal
+                {% else %}text-zinc-400{% endif %}">Out for delivery</span>
+        </div>
+
+        <!-- Step 4: Delivered -->
+        <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full border-4 border-white shadow-sm flex items-center justify-center transition-all duration-300
+                {% if status == 'Delivered' %}bg-brandGold text-white
+                {% else %}bg-zinc-100 border-zinc-100 text-zinc-400{% endif %}">
+                <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+            <span class="text-[10px] uppercase tracking-widest font-bold mt-2.5 
+                {% if status == 'Delivered' %}text-brandGold{% else %}text-zinc-400{% endif %}">Delivered</span>
+        </div>
+    </div>
+    {% endwith %}
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <!-- Left Column (Items Ordered) -->
+    <div class="lg:col-span-2 space-y-6">
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm select-none">
+            <h3 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide flex items-center gap-2 mb-6 border-b border-zinc-50 pb-3">
+                <i data-lucide="flower" class="w-5 h-5 text-brandGold stroke-1"></i> Bouquets & Items Ordered
+            </h3>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-zinc-100 font-bold uppercase tracking-widest text-zinc-400">
+                            <th class="pb-4">Flower Curation</th>
+                            <th class="pb-4 text-center">Price</th>
+                            <th class="pb-4 text-center">Quantity</th>
+                            <th class="pb-4 text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-zinc-50 text-zinc-600 font-medium">
+                        {% for item in items %}
+                            <tr class="hover:bg-zinc-50/20 transition-colors">
+                                <td class="py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-14 h-14 rounded-lg bg-zinc-50 border border-zinc-100 overflow-hidden flex-shrink-0">
+                                            {% if item.product.primary_image %}
+                                                <img src="{{ item.product.primary_image }}" alt="{{ item.product.name }}" class="w-full h-full object-cover">
+                                            {% else %}
+                                                <div class="w-full h-full flex items-center justify-center text-zinc-400">
+                                                    <i data-lucide="flower" class="w-6 h-6 stroke-1"></i>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-brandCharcoal hover:text-brandGold transition-colors text-xs">
+                                                <a href="{% url 'store:product_detail' item.product.slug %}">{{ item.product.name }}</a>
+                                            </h4>
+                                            <span class="text-[9px] uppercase tracking-widest text-zinc-400 mt-0.5 block">{{ item.product.category.name }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="py-4 text-center font-sans text-zinc-500 font-semibold">AED {{ item.price }}</td>
+                                <td class="py-4 text-center text-brandCharcoal font-bold">{{ item.quantity }}</td>
+                                <td class="py-4 text-end font-sans font-bold text-green-600">AED {{ item.subtotal }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column (Delivery & Payments summary) -->
+    <div class="space-y-6">
+        <!-- Address card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm select-none">
+            <h3 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide flex items-center gap-2 mb-4 border-b border-zinc-50 pb-3">
+                <i data-lucide="map-pin" class="w-4 h-4 text-brandGold stroke-1"></i> Shipping Address
+            </h3>
+            {% if order.address %}
+                <h4 class="font-semibold text-brandCharcoal text-xs mb-1.5">{{ order.address.full_name }}</h4>
+                <p class="text-xs text-zinc-500 mb-1 pl-0 flex items-center gap-1.5"><i data-lucide="phone" class="w-3.5 h-3.5 opacity-60"></i> {{ order.address.phone }}</p>
+                <p class="text-xs text-zinc-500 pl-0 flex items-start gap-1.5"><i data-lucide="map" class="w-3.5 h-3.5 opacity-60 mt-0.5 flex-shrink-0"></i> <span>{{ order.address.street }}, {{ order.address.city }}, {{ order.address.state }} - {{ order.address.pincode }}</span></p>
+            {% else %}
+                <p class="text-xs text-red-500 font-semibold pl-0 flex items-center gap-1.5"><i data-lucide="alert-circle" class="w-4 h-4"></i> Shipping details removed.</p>
+            {% endif %}
+        </div>
+
+        <!-- Payment Breakdown card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm select-none space-y-4">
+            <h3 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide flex items-center gap-2 border-b border-zinc-50 pb-3">
+                <i data-lucide="credit-card" class="w-4 h-4 text-brandGold stroke-1"></i> Payment Breakdown
+            </h3>
+            
+            <div class="grid grid-cols-2 gap-2.5 text-xs">
+                <span class="text-zinc-500 font-medium">Payment Type:</span>
+                <span class="text-right text-brandCharcoal font-semibold">{{ order.get_payment_method_display }}</span>
+                
+                <span class="text-zinc-500 font-medium mt-1">Payment Status:</span>
+                <div class="text-right">
+                    <span class="inline-block text-[9px] uppercase tracking-widest font-bold {% if order.payment_status == 'PAID' %}bg-green-50 text-green-700 border border-green-100{% else %}bg-yellow-50 text-yellow-700 border border-yellow-100{% endif %} py-0.5 px-2.5 rounded">
+                        {{ order.get_payment_status_display }}
+                    </span>
+                </div>
+            </div>
+            
+            {% if order.discount_amount > 0 %}
+                <div class="border-t border-zinc-100 pt-3 flex justify-between text-xs text-red-500 font-bold">
+                    <span>Coupon Deductions ({{ order.coupon.code }}):</span>
+                    <span>-AED {{ order.discount_amount }}</span>
+                </div>
+            {% endif %}
+            
+            <div class="border-t border-zinc-100 pt-3.5 flex justify-between items-baseline">
+                <span class="font-serif text-base font-semibold text-brandCharcoal">Grand Total:</span>
+                <span class="font-sans font-extrabold text-lg text-green-600">AED {{ order.total }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('DOMContentLoaded', () => {
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

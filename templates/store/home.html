@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Rose & Ivy | Premium Luxury Floral Boutique UAE{% endblock %}
+
+{% block content %}
+<!-- Immersive Premium Split-Screen Hero -->
+<section class="grid grid-cols-1 lg:grid-cols-2 bg-white border border-zinc-100 rounded-3xl overflow-hidden mb-16 select-none shadow-sm">
+    <!-- Left: Dramatic Copy & CTA -->
+    <div class="flex flex-col justify-center p-8 md:p-16 lg:p-20 bg-white">
+        <span class="text-xs uppercase tracking-[0.2em] font-semibold text-brandGold mb-4 flex items-center gap-2">
+            <span class="w-1.5 h-1.5 bg-brandGold rounded-full animate-ping"></span> 
+            Dubai & Abu Dhabi Luxury Floral Boutique
+        </span>
+        <h1 class="font-serif text-4xl md:text-5xl lg:text-6xl font-medium text-brandCharcoal leading-[1.15] mb-6">
+            Bring Smiles to Your <span class="italic text-brandGold font-normal">Loved Ones</span>
+        </h1>
+        <p class="font-sans text-sm md:text-base text-zinc-500 font-light leading-relaxed mb-8 max-w-md">
+            Opulent curations, signature luxury bouquets, and elegant floral combos designed by award-winning florists. Experience the magic of same-day fresh boutique delivery.
+        </p>
+        <div class="flex flex-wrap gap-4">
+            <a href="{% url 'store:product_list' %}" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-full shadow-md hover:shadow-lg">
+                Shop Now
+            </a>
+            <a href="#featured-section" class="border border-zinc-200 text-brandCharcoal hover:bg-zinc-50 transition-colors text-xs font-semibold uppercase tracking-widest px-8 py-4 rounded-full">
+                Explore Creations
+            </a>
+        </div>
+    </div>
+
+    <!-- Right: High-Resolution Floral Arrangement Photo -->
+    <div class="h-64 sm:h-96 lg:h-auto min-h-[350px] bg-zinc-100 relative group overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=1000" alt="White Rose Premium Floral Curations" 
+             class="absolute inset-0 w-full h-full object-cover transition-transform duration-[6s] ease-out group-hover:scale-105">
+        <div class="absolute inset-0 bg-black/10"></div>
+    </div>
+</section>
+
+<!-- Beautiful Circular Minimal Categories Grid -->
+<section class="mb-16">
+    <div class="text-center mb-10 select-none">
+        <h2 class="font-serif text-3xl font-medium text-brandCharcoal tracking-wide mb-2">Shop By Collection</h2>
+        <div class="w-12 h-[1px] bg-brandGold mx-auto"></div>
+    </div>
+    
+    <!-- 4-Column Minimal Circular Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+        <!-- Category: Luxury Bouquets -->
+        <a href="{% url 'store:product_list' %}?category=bouquets" class="flex flex-col items-center group select-none text-center">
+            <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
+                <img src="https://images.unsplash.com/photo-1596436889106-be35e843f974?w=400" alt="Luxury Bouquets" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            </div>
+            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Luxury Bouquets</h6>
+        </a>
+
+        <!-- Category: Cakes & Flowers -->
+        <a href="{% url 'store:product_list' %}?q=cake" class="flex flex-col items-center group select-none text-center">
+            <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
+                <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400" alt="Cakes & Flowers" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            </div>
+            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Cakes & Flowers</h6>
+        </a>
+
+        <!-- Category: Chocolates -->
+        <a href="{% url 'store:product_list' %}?q=chocolate" class="flex flex-col items-center group select-none text-center">
+            <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
+                <img src="https://images.unsplash.com/photo-1549007994-cb92ca817bc7?w=400" alt="Chocolates" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            </div>
+            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Chocolates</h6>
+        </a>
+
+        <!-- Category: Gifts -->
+        <a href="{% url 'store:product_list' %}?category=gifts" class="flex flex-col items-center group select-none text-center">
+            <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
+                <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400" alt="Gifts" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+            </div>
+            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Gifts & Hampers</h6>
+        </a>
+    </div>
+</section>
+
+<!-- Sleek Conversion Booster Trust Bar -->
+<section class="border-y border-zinc-100 py-10 bg-white mb-16 select-none">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 text-center max-w-6xl mx-auto px-4">
+        <!-- Prop 1 -->
+        <div class="flex flex-col items-center">
+            <i data-lucide="truck" class="w-7 h-7 text-brandGold stroke-1 mb-3"></i>
+            <h5 class="text-xs uppercase tracking-wider font-semibold text-brandCharcoal mb-1">Free Delivery</h5>
+            <p class="text-[10px] text-zinc-400 font-light">On all orders over AED 500</p>
+        </div>
+
+        <!-- Prop 2 -->
+        <div class="flex flex-col items-center border-l lg:border-l border-zinc-100">
+            <i data-lucide="calendar" class="w-7 h-7 text-brandGold stroke-1 mb-3"></i>
+            <h5 class="text-xs uppercase tracking-wider font-semibold text-brandCharcoal mb-1">Same-Day Delivery</h5>
+            <p class="text-[10px] text-zinc-400 font-light">Order before 8 PM daily</p>
+        </div>
+
+        <!-- Prop 3 -->
+        <div class="flex flex-col items-center border-l border-zinc-100">
+            <i data-lucide="sparkles" class="w-7 h-7 text-brandGold stroke-1 mb-3"></i>
+            <h5 class="text-xs uppercase tracking-wider font-semibold text-brandCharcoal mb-1">Freshness Promise</h5>
+            <p class="text-[10px] text-zinc-400 font-light">Handcrafted in just 30 minutes</p>
+        </div>
+
+        <!-- Prop 4 -->
+        <div class="flex flex-col items-center border-l border-zinc-100">
+            <i data-lucide="shield-check" class="w-7 h-7 text-brandGold stroke-1 mb-3"></i>
+            <h5 class="text-xs uppercase tracking-wider font-semibold text-brandCharcoal mb-1">100% Secure Checkout</h5>
+            <p class="text-[10px] text-zinc-400 font-light">Protected SSL Payments</p>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section id="featured-section" class="mb-16">
+    <div class="flex flex-col md:flex-row md:items-end justify-between border-b border-zinc-100 pb-5 mb-10 select-none">
+        <div>
+            <h2 class="font-serif text-3xl font-medium text-brandCharcoal tracking-wide mb-1">Featured Curations</h2>
+            <p class="text-zinc-400 text-xs font-light">Handcrafted premium floral designs recommended by our styling team</p>
+        </div>
+        <a href="{% url 'store:product_list' %}" class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal hover:text-brandGold transition-colors flex items-center gap-1.5 mt-4 md:mt-0">
+            View All Collections <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+        </a>
+    </div>
+
+    <!-- Product Grid (4 columns desktop, 2 columns mobile) -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+        {% if featured_products %}
+            {% for prod in featured_products %}
+                <div class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                    <!-- Image wrapper & Wishlist Bookmark -->
+                    <div class="aspect-square w-full bg-zinc-50 relative overflow-hidden">
+                        <img src="{% if prod.image_url %}{{ prod.image_url }}{% elif prod.image %}{{ prod.image.url }}{% else %}{% static 'images/placeholder-flower.svg' %}{% endif %}" 
+                             alt="{{ prod.name }}" 
+                             class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                        
+                        <!-- Wishlist Badge -->
+                        <a href="{% url 'store:wishlist_toggle' prod.id %}?next={{ request.path }}" 
+                           class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-zinc-100 text-brandCharcoal hover:bg-red-50 hover:text-red-500 transition-all p-2 rounded-full shadow-sm hover:scale-105 z-10" 
+                           title="Bookmark curation">
+                            <i data-lucide="heart" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                    
+                    <!-- Content -->
+                    <div class="p-4 md:p-5 flex-grow flex flex-col justify-between">
+                        <div class="mb-4">
+                            <span class="text-[9px] uppercase tracking-widest text-brandGold font-bold block mb-1.5">{{ prod.category.name }}</span>
+                            <h4 class="font-serif text-sm md:text-base font-semibold text-brandCharcoal hover:text-brandGold transition-colors truncate">
+                                <a href="{% url 'store:product_detail' prod.slug %}">{{ prod.name }}</a>
+                            </h4>
+                            
+                            <!-- Rating -->
+                            <div class="flex items-center gap-1 mt-2">
+                                <i data-lucide="star" class="w-3.5 h-3.5 fill-brandGold text-brandGold"></i>
+                                <span class="text-[10px] text-zinc-400 font-semibold mt-0.5">({{ prod.average_rating|default:"0.0" }})</span>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-3 border-t border-zinc-50 flex items-center justify-between gap-2 select-none">
+                            <span class="font-sans font-bold text-xs md:text-sm text-brandCharcoal">AED {{ prod.price }} Inc. VAT</span>
+                            <form action="{% url 'cart:cart_add' prod.id %}" method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
+                                <button type="submit" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold px-4 py-2 rounded-full flex items-center gap-1.5">
+                                    <i data-lucide="shopping-bag" class="w-3.5 h-3.5"></i> Add
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <!-- Fallback empty state -->
+            <div class="col-span-full py-16 bg-zinc-50 border border-dashed border-zinc-200 rounded-3xl text-center">
+                <i data-lucide="smile" class="w-12 h-12 text-zinc-300 mx-auto mb-4 stroke-1"></i>
+                <h4 class="font-serif text-lg text-brandCharcoal font-semibold mb-1">Welcome to Rose & Ivy!</h4>
+                <p class="text-xs text-zinc-400 font-light max-w-sm mx-auto">Please load sample database products in your Django admin or seed products programmatically to see featured designs.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Freshly Harvested (New Arrivals) Section -->
+{% if new_arrivals %}
+<section class="mb-16">
+    <div class="text-center mb-10 select-none">
+        <h2 class="font-serif text-3xl font-medium text-brandCharcoal tracking-wide mb-2">Freshly Harvested</h2>
+        <p class="text-zinc-400 text-xs font-light">Fresh luxury arrangements completed within the last 24 hours</p>
+        <div class="w-12 h-[1px] bg-brandGold mx-auto mt-2"></div>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
+        {% for prod in new_arrivals %}
+            <div class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-zinc-100 shadow-sm hover:shadow-md transition-all">
+                <div class="aspect-square w-full bg-zinc-50 relative overflow-hidden">
+                    <img src="{% if prod.image_url %}{{ prod.image_url }}{% elif prod.image %}{{ prod.image.url }}{% else %}{% static 'images/placeholder-flower.svg' %}{% endif %}" 
+                         alt="{{ prod.name }}" 
+                         class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105">
+                    <a href="{% url 'store:wishlist_toggle' prod.id %}?next={{ request.path }}" 
+                       class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm border border-zinc-100 text-brandCharcoal hover:bg-red-50 hover:text-red-500 transition-all p-2 rounded-full shadow-sm hover:scale-105 z-10">
+                        <i data-lucide="heart" class="w-4 h-4"></i>
+                    </a>
+                </div>
+                <div class="p-4 flex-grow flex flex-col justify-between">
+                    <div>
+                        <span class="text-[9px] uppercase tracking-widest text-brandGold font-bold block mb-1">{{ prod.category.name }}</span>
+                        <h4 class="font-serif text-sm font-semibold text-brandCharcoal hover:text-brandGold transition-colors truncate">
+                            <a href="{% url 'store:product_detail' prod.slug %}">{{ prod.name }}</a>
+                        </h4>
+                    </div>
+                    <div class="pt-3 mt-3 border-t border-zinc-50 flex items-center justify-between gap-2 select-none">
+                        <span class="font-sans font-bold text-xs text-brandCharcoal">AED {{ prod.price }} Inc. VAT</span>
+                        <form action="{% url 'cart:cart_add' prod.id %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="text-brandCharcoal hover:text-brandGold transition-colors p-1" title="Add to bag">
+                                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+{% endblock %}

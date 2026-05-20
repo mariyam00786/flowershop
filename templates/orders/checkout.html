@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout | Rose & Ivy{% endblock %}
+
+{% block content %}
+<!-- Header & Breadcrumbs -->
+<div class="mb-8 select-none">
+    <nav class="flex text-xs uppercase tracking-widest text-zinc-400 gap-2 mb-4 font-semibold">
+        <a href="{% url 'store:home' %}" class="hover:text-brandGold transition-colors">Home</a>
+        <span>/</span>
+        <span class="text-brandCharcoal">Checkout</span>
+    </nav>
+    <h1 class="font-serif text-3xl md:text-4xl font-medium text-brandCharcoal tracking-wide">Secure Checkout</h1>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+    <!-- Left columns (Addresses & Payments) -->
+    <div class="lg:col-span-2 space-y-6">
+        <!-- 1. Shipping Address Card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="font-serif text-xl font-medium text-brandCharcoal tracking-wide flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-5 h-5 text-brandGold stroke-1"></i> 1. Shipping Address
+                </h3>
+                <a href="{% url 'accounts:address_add' %}?next={{ request.path }}" class="border border-zinc-200 text-brandCharcoal hover:bg-zinc-50 transition-colors text-[10px] font-bold uppercase tracking-widest px-4 py-2.5 rounded-full">
+                    Add Address
+                </a>
+            </div>
+
+            {% if addresses %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for addr in addresses %}
+                        <div class="relative group">
+                            <label class="block w-full h-full border border-zinc-200 rounded-xl p-4 cursor-pointer hover:border-brandGold transition-all relative address-card select-none {% if addr.is_default or forloop.first %}border-brandGold bg-zinc-50/50{% endif %}" id="addr-card-{{ addr.id }}">
+                                <div class="flex items-start justify-between mb-2">
+                                    <div class="flex items-center gap-2">
+                                        <input class="w-4 h-4 text-brandGold border-zinc-300 focus:ring-brandGold address-radio" type="radio" name="checkout_address" value="{{ addr.id }}" {% if addr.is_default or forloop.first %}checked{% endif %} onclick="selectAddress('{{ addr.id }}')">
+                                        <span class="font-semibold text-sm text-brandCharcoal">{{ addr.full_name }}</span>
+                                    </div>
+                                    {% if addr.is_default %}
+                                        <span class="text-[9px] uppercase tracking-widest font-bold bg-brandGold/10 text-brandGold px-2 py-0.5 rounded">Default</span>
+                                    {% endif %}
+                                </div>
+                                <p class="text-xs text-zinc-500 mb-1 pl-6 flex items-center gap-1.5"><i data-lucide="phone" class="w-3.5 h-3.5 opacity-60"></i> {{ addr.phone }}</p>
+                                <p class="text-xs text-zinc-500 pl-6 flex items-start gap-1.5"><i data-lucide="map" class="w-3.5 h-3.5 opacity-60 mt-0.5 flex-shrink-0"></i> <span>{{ addr.street }}, {{ addr.city }}, {{ addr.state }} - {{ addr.pincode }}</span></p>
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="border border-dashed border-zinc-200 rounded-2xl p-8 text-center bg-zinc-50 select-none">
+                    <i data-lucide="alert-circle" class="w-10 h-10 text-zinc-300 mx-auto mb-3 stroke-1"></i>
+                    <h5 class="font-serif text-base text-brandCharcoal font-semibold mb-1">No Delivery Address Added</h5>
+                    <p class="text-zinc-400 text-xs font-light max-w-xs mx-auto mb-6">You must register a delivery address before you can complete your order.</p>
+                    <a href="{% url 'accounts:address_add' %}?next={{ request.path }}" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest px-6 py-3 rounded-full shadow-sm">
+                        Add Shipping Address
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- 2. Choose Payment Method Card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm">
+            <h3 class="font-serif text-xl font-medium text-brandCharcoal tracking-wide flex items-center gap-2 mb-6">
+                <i data-lucide="credit-card" class="w-5 h-5 text-brandGold stroke-1"></i> 2. Choose Payment Method
+            </h3>
+
+            {% if addresses %}
+                <!-- Custom Luxury Payment Tabs -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 select-none">
+                    <!-- Stripe Button -->
+                    <button type="button" onclick="switchPaymentTab('STRIPE')" id="tab-btn-STRIPE" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-brandGold bg-zinc-50/50 text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
+                        <i data-lucide="credit-card" class="w-6 h-6 mb-2"></i>
+                        <span class="text-[9px] md:text-[10px] font-bold text-center">Stripe (Card)</span>
+                    </button>
+                    <!-- Razorpay Button -->
+                    <button type="button" onclick="switchPaymentTab('RAZORPAY')" id="tab-btn-RAZORPAY" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-zinc-200 text-zinc-500 bg-white hover:border-brandGold hover:text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
+                        <i data-lucide="qr-code" class="w-6 h-6 mb-2"></i>
+                        <span class="text-[9px] md:text-[10px] font-bold text-center">Razorpay (UPI)</span>
+                    </button>
+                    <!-- COD Button -->
+                    <button type="button" onclick="switchPaymentTab('COD')" id="tab-btn-COD" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-zinc-200 text-zinc-500 bg-white hover:border-brandGold hover:text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
+                        <i data-lucide="truck" class="w-6 h-6 mb-2"></i>
+                        <span class="text-[9px] md:text-[10px] font-bold text-center">Cash On Delivery</span>
+                    </button>
+                    <!-- Wallet Button -->
+                    <button type="button" onclick="switchPaymentTab('WALLET')" id="tab-btn-WALLET" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-zinc-200 text-zinc-500 bg-white hover:border-brandGold hover:text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
+                        <i data-lucide="wallet" class="w-6 h-6 mb-2"></i>
+                        <span class="text-[9px] md:text-[10px] font-bold text-center">Wallet Balance</span>
+                    </button>
+                </div>
+
+                <!-- Payment Details Panel Content -->
+                <div class="bg-zinc-50 border border-zinc-100 rounded-2xl p-5 select-none">
+                    <!-- Stripe Panel -->
+                    <div id="panel-STRIPE" class="payment-tab-panel space-y-3">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> Stripe Secure Checkout
+                        </h4>
+                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
+                            Pay securely using your credit or debit card. You will be redirected to the secure Stripe Checkout portal to safely complete your transaction.
+                        </p>
+                        <div class="bg-white border border-zinc-200 rounded-xl p-3 flex items-center gap-2 max-w-sm">
+                            <i data-lucide="info" class="w-4 h-4 text-brandGold flex-shrink-0"></i>
+                            <span class="text-[10px] text-zinc-500">Stripe Test Card: <strong class="text-brandCharcoal">4242 4242 4242 4242</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- Razorpay Panel -->
+                    <div id="panel-RAZORPAY" class="payment-tab-panel hidden space-y-3">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
+                            <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> Razorpay Indian Gateway
+                        </h4>
+                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
+                            Pay using Indian UPI apps, Net Banking, or Credit Cards. A secure interactive popup will let you complete the payment seamlessly.
+                        </p>
+                        <div class="bg-white border border-zinc-200 rounded-xl p-3 flex items-center gap-2 max-w-sm">
+                            <i data-lucide="info" class="w-4 h-4 text-brandGold flex-shrink-0"></i>
+                            <span class="text-[10px] text-zinc-500">Razorpay Test UPI ID: <strong class="text-brandCharcoal">success@razorpay</strong></span>
+                        </div>
+                    </div>
+
+                    <!-- COD Panel -->
+                    <div id="panel-COD" class="payment-tab-panel hidden space-y-3">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
+                            <i data-lucide="truck" class="w-4 h-4 text-brandGold"></i> Cash on Delivery (COD)
+                        </h4>
+                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
+                            Pay upon delivery of your luxury stems. Our delivery agents in Dubai/Abu Dhabi accept cash, card terminals, or instant mobile UPI scan links.
+                        </p>
+                    </div>
+
+                    <!-- Wallet Panel -->
+                    <div id="panel-WALLET" class="payment-tab-panel hidden space-y-4">
+                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
+                            <i data-lucide="wallet" class="w-4 h-4 text-brandGold"></i> Pay via Wallet Balance
+                        </h4>
+                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
+                            Instantly deduct the amount from your registered account store credit balance.
+                        </p>
+                        <div class="bg-white border border-zinc-200 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
+                            <div>
+                                <span class="text-[10px] text-zinc-400 uppercase tracking-widest font-semibold block mb-0.5">Your Balance</span>
+                                <span class="font-sans font-bold text-base text-brandCharcoal">AED {{ wallet.balance|default:"0.00" }}</span>
+                            </div>
+                            
+                            {% if wallet.balance >= cart.total_price %}
+                                <span class="bg-green-50 text-green-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full border border-green-100">
+                                    Balance Sufficient
+                                </span>
+                            {% else %}
+                                <div class="text-right">
+                                    <span class="bg-red-50 text-red-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full border border-red-100 block mb-1">
+                                        Insufficient Balance
+                                    </span>
+                                    <a href="{% url 'accounts:wallet' %}" class="text-[10px] font-bold text-brandGold hover:underline uppercase tracking-widest" target="_blank">
+                                        Top Up Wallet
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="button" id="pay-now-btn" onclick="submitCheckoutForm()" class="w-full bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-xs font-semibold uppercase tracking-widest py-4 rounded-full mt-6 shadow-sm hover:shadow flex items-center justify-center gap-2">
+                    <span id="btn-text">Place Order & Pay Now</span>
+                    <svg id="btn-spinner" class="animate-spin h-4 w-4 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+            {% else %}
+                <div class="border border-zinc-200 rounded-xl p-4 text-center bg-zinc-50 text-xs text-zinc-400 select-none">
+                    Please register and select a shipping address first.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Right Column (Order Summary & Coupon) -->
+    <div class="space-y-6">
+        <!-- Coupon Form Card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm select-none">
+            <h3 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide flex items-center gap-2 mb-4">
+                <i data-lucide="tag" class="w-4 h-4 text-brandGold stroke-1"></i> Apply Coupon Code
+            </h3>
+            <div class="flex gap-2">
+                <input type="text" id="coupon-input" placeholder="COUPONCODE" class="flex-grow bg-zinc-50 border border-zinc-200 rounded-full px-4 py-2.5 text-xs text-brandCharcoal font-semibold uppercase tracking-wider focus:outline-none focus:border-brandGold">
+                <button type="button" onclick="applyCouponCode()" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] font-semibold uppercase tracking-widest px-6 py-2.5 rounded-full">
+                    Apply
+                </button>
+            </div>
+            <div id="coupon-message" class="text-xs mt-3 hidden"></div>
+        </div>
+
+        <!-- Summary Details Card -->
+        <div class="bg-white border border-zinc-100 p-6 rounded-2xl shadow-sm lg:sticky lg:top-24 select-none">
+            <h3 class="font-serif text-lg font-medium text-brandCharcoal tracking-wide mb-4">Order Summary</h3>
+
+            <!-- Scrollable Items summary -->
+            <div class="divide-y divide-zinc-100 border-b border-zinc-100 pb-4 mb-4 max-h-48 overflow-y-auto pr-1">
+                {% for item in cart.items.all %}
+                    <div class="flex items-center justify-between gap-3 py-2.5 text-xs">
+                        <div class="truncate max-w-[170px]">
+                            <span class="font-semibold text-brandCharcoal">{{ item.product.name }}</span>
+                            <span class="text-zinc-400 font-bold ml-1">x{{ item.quantity }}</span>
+                        </div>
+                        <span class="font-sans font-bold text-zinc-700">AED {{ item.subtotal }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Total Breakdowns -->
+            <div class="space-y-2 text-xs mb-4">
+                <div class="flex justify-between text-zinc-500 font-medium">
+                    <span>Cart Subtotal</span>
+                    <span class="font-sans font-bold text-brandCharcoal">AED <span id="summary-subtotal">{{ cart.total_price }}</span></span>
+                </div>
+                
+                <div id="summary-discount-row" class="flex justify-between text-red-500 font-bold hidden">
+                    <span>Coupon Discount (<span id="summary-discount-percent">0</span>%)</span>
+                    <span>-AED <span id="summary-discount-amount">0.00</span></span>
+                </div>
+            </div>
+
+            <div class="flex justify-between items-baseline border-t border-zinc-100 pt-4 mb-6">
+                <span class="font-serif text-base font-semibold text-brandCharcoal">Total Amount</span>
+                <span class="font-sans font-extrabold text-xl text-green-600">AED <span id="summary-total">{{ cart.total_price }}</span></span>
+            </div>
+
+            <div class="bg-zinc-50 border border-zinc-100 rounded-xl p-3.5 text-center flex items-center justify-center gap-2">
+                <i data-lucide="shield-check" class="w-4 h-4 text-green-500 stroke-2"></i>
+                <span class="text-[10px] text-zinc-400 font-semibold uppercase tracking-wider">100% SECURE SSL CHECKOUT</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SDK for Razorpay overlay -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    // State values
+    let selectedAddressId = "{{ default_address.id|default:'' }}";
+    let activePaymentMethod = "STRIPE";
+    let appliedCouponCode = "";
+    let appliedDiscountPercent = 0;
+    let cartSubtotal = parseFloat("{{ cart.total_price }}");
+
+    // Address selection highlights
+    function selectAddress(addrId) {
+        selectedAddressId = addrId;
+        
+        // Remove active styling from all labels
+        document.querySelectorAll('.address-card').forEach(card => {
+            card.classList.remove('border-brandGold', 'bg-zinc-50/50');
+            card.classList.add('border-zinc-200');
+        });
+        
+        // Add active style to selected address card label
+        const activeCard = document.getElementById(`addr-card-${addrId}`);
+        if (activeCard) {
+            activeCard.classList.remove('border-zinc-200');
+            activeCard.classList.add('border-brandGold', 'bg-zinc-50/50');
+        }
+    }
+
+    // Custom tab switcher logic (vanilla JavaScript)
+    function switchPaymentTab(method) {
+        activePaymentMethod = method;
+        
+        // Update tab buttons styles
+        document.querySelectorAll('.payment-tab-btn').forEach(btn => {
+            btn.classList.remove('border-brandGold', 'text-brandGold', 'bg-zinc-50/50');
+            btn.classList.add('border-zinc-200', 'text-zinc-500', 'bg-white');
+        });
+        
+        const activeBtn = document.getElementById(`tab-btn-${method}`);
+        if (activeBtn) {
+            activeBtn.classList.remove('border-zinc-200', 'text-zinc-500', 'bg-white');
+            activeBtn.classList.add('border-brandGold', 'text-brandGold', 'bg-zinc-50/50');
+        }
+        
+        // Update tab panels visibility
+        document.querySelectorAll('.payment-tab-panel').forEach(panel => {
+            panel.classList.add('hidden');
+        });
+        
+        const activePanel = document.getElementById(`panel-${method}`);
+        if (activePanel) {
+            activePanel.classList.remove('hidden');
+        }
+    }
+
+    // Coupon logic
+    function applyCouponCode() {
+        const input = document.getElementById('coupon-input');
+        const code = input.value.trim().toUpperCase();
+        const msgEl = document.getElementById('coupon-message');
+        
+        if (!code) {
+            msgEl.className = "text-xs mt-3 text-red-500 font-bold uppercase tracking-wider";
+            msgEl.innerText = "Please enter a coupon code.";
+            msgEl.classList.remove('hidden');
+            return;
+        }
+
+        fetch(`{% url 'orders:apply_coupon' %}?code=${code}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    appliedCouponCode = data.code;
+                    appliedDiscountPercent = data.discount_percent;
+                    
+                    msgEl.className = "text-xs mt-3 text-green-600 font-bold uppercase tracking-wider";
+                    msgEl.innerText = data.message;
+                    msgEl.classList.remove('hidden');
+                    
+                    // Update Summary UI
+                    const discountAmt = (cartSubtotal * (appliedDiscountPercent / 100)).toFixed(2);
+                    const grandTotal = (cartSubtotal - discountAmt).toFixed(2);
+                    
+                    document.getElementById('summary-discount-percent').innerText = appliedDiscountPercent;
+                    document.getElementById('summary-discount-amount').innerText = discountAmt;
+                    document.getElementById('summary-total').innerText = grandTotal;
+                    document.getElementById('summary-discount-row').classList.remove('hidden');
+                    
+                    showToast(`Coupon '${appliedCouponCode}' applied! You save AED ${discountAmt}.`, 'success');
+                } else {
+                    msgEl.className = "text-xs mt-3 text-red-500 font-bold uppercase tracking-wider";
+                    msgEl.innerText = data.message;
+                    msgEl.classList.remove('hidden');
+                    
+                    // Reset Summary UI
+                    document.getElementById('summary-total').innerText = cartSubtotal.toFixed(2);
+                    document.getElementById('summary-discount-row').classList.add('hidden');
+                    appliedCouponCode = "";
+                    appliedDiscountPercent = 0;
+                    
+                    showToast(data.message, 'error');
+                }
+            })
+            .catch(err => {
+                console.error("Coupon error:", err);
+                showToast("Failed to apply coupon.", "error");
+            });
+    }
+
+    // Checkout submit payload
+    function submitCheckoutForm() {
+        if (!selectedAddressId) {
+            showToast("Please add/select a delivery address.", "error");
+            return;
+        }
+
+        const payBtn = document.getElementById('pay-now-btn');
+        const btnText = document.getElementById('btn-text');
+        const spinner = document.getElementById('btn-spinner');
+
+        // Lock form & show spinner
+        payBtn.disabled = true;
+        btnText.innerText = "Processing Checkout...";
+        spinner.classList.remove('hidden');
+
+        // Build checkout form payload
+        const formData = new FormData();
+        formData.append('address_id', selectedAddressId);
+        formData.append('coupon_code', appliedCouponCode);
+        formData.append('payment_method', activePaymentMethod);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        fetch("{% url 'orders:place_order' %}", {
+            method: "POST",
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                if (!data.payment_needed) {
+                    showToast("Order placed successfully!", "success");
+                    window.location.href = data.redirect_url;
+                } else {
+                    // Gateway payment redirect/popup
+                    if (data.gateway === 'STRIPE' || data.gateway === 'RAZORPAY') {
+                        window.location.href = data.redirect_url;
+                    }
+                }
+            } else {
+                // Show error toast & unlock form
+                showToast(data.message, 'error');
+                payBtn.disabled = false;
+                btnText.innerText = "Place Order & Pay Now";
+                spinner.classList.add('hidden');
+            }
+        })
+        .catch(err => {
+            console.error("Checkout submission error:", err);
+            showToast("An unexpected error occurred during order processing.", "error");
+            payBtn.disabled = false;
+            btnText.innerText = "Place Order & Pay Now";
+            spinner.classList.add('hidden');
+        });
+    }
+
+    // Set first address as default selection on mount if exists
+    window.addEventListener('DOMContentLoaded', () => {
+        if (selectedAddressId) {
+            selectAddress(selectedAddressId);
+        } else {
+            const firstRadio = document.querySelector('.address-radio');
+            if (firstRadio) {
+                firstRadio.click();
+            }
+        }
+        lucide.createIcons();
+    });
+</script>
+{% endblock %}

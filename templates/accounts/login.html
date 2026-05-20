@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign In | Rose & Ivy{% endblock %}
+
+{% block content %}
+<div class="flex items-center justify-center min-h-[70vh] py-12 px-4 select-none">
+    <div class="w-full max-w-md bg-white border border-zinc-100 p-8 md:p-10 rounded-3xl shadow-sm relative overflow-hidden">
+        <!-- Backdrop Subtle Accent Glow -->
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-brandChampagne/10 rounded-full blur-2xl"></div>
+        
+        <div class="text-center mb-8">
+            <div class="inline-flex items-center justify-center bg-zinc-50 border border-zinc-100 rounded-full p-4 mb-4 shadow-sm">
+                <i data-lucide="flower" class="w-7 h-7 text-brandGold stroke-1"></i>
+            </div>
+            <h2 class="font-serif text-3xl font-medium text-brandCharcoal tracking-wide mb-1">Welcome Back</h2>
+            <p class="text-zinc-400 text-xs font-light">Sign in to your premium Rose & Ivy account</p>
+        </div>
+
+        <form method="POST" class="space-y-5">
+            {% csrf_token %}
+            
+            {% if form.non_field_errors %}
+                <div class="bg-red-50 border border-red-100 rounded-2xl p-3 text-xs text-red-600 font-medium">
+                    {% for error in form.non_field_errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+            
+            <!-- Username Input -->
+            <div class="space-y-1.5">
+                <label for="id_username" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">Username</label>
+                <div class="relative flex items-center">
+                    <i data-lucide="user" class="absolute left-4 w-4 h-4 text-zinc-400 stroke-1.5"></i>
+                    <input type="text" name="username" id="id_username" required placeholder="Enter username" 
+                           class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 pl-11 pr-4 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                </div>
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.username.errors %}{{ error }}{% endfor %}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Password Input -->
+            <div class="space-y-1.5">
+                <label for="id_password" class="text-[10px] uppercase tracking-wider font-bold text-zinc-400 block">Password</label>
+                <div class="relative flex items-center">
+                    <i data-lucide="lock" class="absolute left-4 w-4 h-4 text-zinc-400 stroke-1.5"></i>
+                    <input type="password" name="password" id="id_password" required placeholder="Enter password" 
+                           class="w-full bg-zinc-50 border border-zinc-200 rounded-full py-3.5 pl-11 pr-4 text-xs text-brandCharcoal font-medium focus:outline-none focus:border-brandGold transition-all">
+                </div>
+                {% if form.password.errors %}
+                    <p class="text-red-500 text-[10px] font-semibold mt-1">{% for error in form.password.errors %}{{ error }}{% endfor %}</p>
+                {% endif %}
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="w-full bg-brandCharcoal hover:bg-brandGold text-white transition-all duration-300 text-xs font-semibold uppercase tracking-widest py-3.5 rounded-full shadow-sm hover:shadow flex items-center justify-center gap-1.5 mt-2">
+                <i data-lucide="log-in" class="w-4 h-4"></i> Sign In
+            </button>
+        </form>
+        
+        <!-- Registration Redirect -->
+        <div class="mt-8 pt-6 border-t border-zinc-100 text-center text-xs">
+            <p class="text-zinc-400 font-light">
+                Don't have an account? 
+                <a href="{% url 'accounts:register' %}" class="font-semibold text-brandCharcoal hover:text-brandGold transition-colors uppercase tracking-wider ml-1">
+                    Register Here
+                </a>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
