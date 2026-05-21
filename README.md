@@ -44,5 +44,37 @@ Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your web browser to exp
 
 ---
 
+## 🛠️ Development Setup (Coordinated Dev Server & Auto-Push)
+
+To streamline local coding, the project includes an automated Git push system so that every saved file modification is automatically staged, committed, and pushed to your remote repository.
+
+### 1. Run the Development Environment
+You can launch both the Django development server and the background file-watcher with a single command:
+```bash
+bash run_dev.sh
+```
+> [!NOTE]
+> On Windows, execute this shell script in a Bash-compliant terminal such as **Git Bash** or **WSL**.
+
+### 2. How the Auto-Push Works
+* **Automatic Recursive Watcher**: Powered by `watchdog`, the script recursively monitors all project folders.
+* **Ignored Paths**: Files/folders like `.git`, `__pycache__`, `.pyc`, `.DS_Store`, `node_modules`, `migrations/`, and `db.sqlite3` are strictly filtered out.
+* **10-Second Debounce Cooldown**: Once a saved file is detected, a 10-second timer begins. If further saves occur during this time, the timer resets. This bundles multiple edits into a single push.
+* **Smart Commit Messages**: Automatically classifies modifications to select highly relevant, readable commit logs:
+  * Modified templates (`.html`) ➔ `"update: template [filename]"`
+  * Modified views (`views.py`) ➔ `"update: views [app_name]"`
+  * Modified models (`models.py`) ➔ `"update: models [app_name]"`
+  * Modified stylesheets (`.css`) ➔ `"update: styles"`
+  * Modified routing rules (`urls.py`) ➔ `"update: urls"`
+  * Other files ➔ `"auto: update [timestamp]"`
+* **Zero-Change Clean Check**: If you save without actual changes, the script detects a clean `git status` and skips commit/push operations silently.
+* **Fault-Resilience**: If a network interruption or authentication error happens, the script logs the failure gracefully and continues watching.
+
+### 3. How to Stop
+To safely close both background servers:
+* Press `Ctrl + C` in the running terminal. The launcher traps the signal and terminates both active subprocesses cleanly.
+
+---
+
 ## 📸 Mockup Preview
 The design leverages generous luxury whitespace and responsive visual zoom states to create an opulent digital boutique experience.

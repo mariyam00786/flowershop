@@ -3,3 +3,7 @@ __pycache__/
 *.exe.stackdump
 .DS_Store
 *.log
+
+# Automated push utility and launcher
+auto_push.py
+run_dev.sh
