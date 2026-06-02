@@ -47,37 +47,21 @@
     
     <!-- 4-Column Minimal Circular Grid -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
-        <!-- Collection: Luxury Bouquets -->
-        <a href="{% url 'store:product_list' %}?category=bouquets" class="flex flex-col items-center group select-none text-center">
+        {% for category in categories %}
+        <!-- Collection: {{ category.name }} -->
+        <a href="{% url 'store:product_list' %}?category={{ category.slug }}" class="flex flex-col items-center group select-none text-center">
             <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
-                <img src="https://images.unsplash.com/photo-1596436889106-be35e843f974?w=400" alt="Luxury Bouquets" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                {% if category.image %}
+                    <img src="{{ category.image.url }}" alt="{{ category.name }}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                {% else %}
+                    <div class="w-full h-full bg-gradient-to-br from-brandGold/20 to-brandCharcoal/10 flex items-center justify-center">
+                        <i data-lucide="flower-2" class="w-10 h-10 text-brandGold/40"></i>
+                    </div>
+                {% endif %}
             </div>
-            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Luxury Bouquets</h6>
+            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">{{ category.name }}</h6>
         </a>
-
-        <!-- Collection: Single Flowers -->
-        <a href="{% url 'store:product_list' %}?category=single-flowers" class="flex flex-col items-center group select-none text-center">
-            <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
-                <img src="https://images.unsplash.com/photo-1559563362-c667ba5f5480?w=400" alt="Single Flowers" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            </div>
-            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Single Flowers</h6>
-        </a>
-
-        <!-- Collection: Flower Boxes -->
-        <a href="{% url 'store:product_list' %}?q=box" class="flex flex-col items-center group select-none text-center">
-            <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
-                <img src="https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=400" alt="Flower Boxes" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            </div>
-            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Flower Boxes</h6>
-        </a>
-
-        <!-- Collection: Gift Hampers -->
-        <a href="{% url 'store:product_list' %}?category=gifts" class="flex flex-col items-center group select-none text-center">
-            <div class="w-28 h-28 md:w-36 md:h-36 rounded-full overflow-hidden border border-zinc-100 shadow-sm transition-all duration-300 group-hover:border-brandGold group-hover:shadow-md mb-4 bg-zinc-50">
-                <img src="https://images.unsplash.com/photo-1487530811015-780780fc54c2?w=400" alt="Gift Hampers" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
-            </div>
-            <h6 class="text-xs tracking-widest uppercase font-semibold text-brandCharcoal group-hover:text-brandGold transition-colors">Gift Hampers</h6>
-        </a>
+        {% endfor %}
     </div>
 </section>
 
