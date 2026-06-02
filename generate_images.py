@@ -7,7 +7,6 @@ based on Rose & Ivy collection prompts
 import os
 import requests
 from pathlib import Path
-from urllib.parse import urlencode
 
 # Create media directories if they don't exist
 MEDIA_ROOT = Path(__file__).parent / 'media'
@@ -17,73 +16,67 @@ PRODUCTS_DIR = MEDIA_ROOT / 'products'
 CATEGORIES_DIR.mkdir(parents=True, exist_ok=True)
 PRODUCTS_DIR.mkdir(parents=True, exist_ok=True)
 
-# Unsplash API (free, no auth required for basic searches)
-UNSPLASH_BASE = "https://source.unsplash.com/1200x800"
-
-# Image search queries for categories
+# Direct image URLs for flower photos (from Pexels/Unsplash - stable URLs)
 category_images = {
     'Luxury Bouquets': {
-        'query': 'luxury premium roses pink peonies flowers bouquet',
+        'url': 'https://images.pexels.com/photos/50582/rose-flower-red-flowers-bloom-50582.jpeg',
         'filename': 'luxury-bouquets.jpg'
     },
     'Single Flowers': {
-        'query': 'single flower iris blue macro close-up petal',
+        'url': 'https://images.pexels.com/photos/36717/amazing-animal-beautiful-beautifull.jpg',
         'filename': 'single-flowers.jpg'
     },
     'Flower Boxes': {
-        'query': 'luxury flower box arrangement roses emerald green',
+        'url': 'https://images.pexels.com/photos/5632389/pexels-photo-5632389.jpeg',
         'filename': 'flower-boxes.jpg'
     },
     'Gift Hampers': {
-        'query': 'luxury gift hamper flowers tulips lavender basket',
+        'url': 'https://images.pexels.com/photos/2835901/pexels-photo-2835901.jpeg',
         'filename': 'gift-hampers.jpg'
     }
 }
 
-# Image search queries for products
+# Direct image URLs for products
 product_images = {
     'Tulip Bouquet': {
-        'query': 'white pink tulips bouquet fresh flowers',
+        'url': 'https://images.pexels.com/photos/842252/pexels-photo-842252.jpeg',
         'filename': 'tulip-bouquet.jpg'
     },
     'White Rose Bouquet': {
-        'query': 'white roses bouquet bridal premium luxury',
+        'url': 'https://images.pexels.com/photos/50581/rose-white-flower-bloom-50581.jpeg',
         'filename': 'white-rose-bouquet.jpg'
     },
     'Blue Iris Single': {
-        'query': 'blue iris flower single stem macro photography',
+        'url': 'https://images.pexels.com/photos/459335/pexels-photo-459335.jpeg',
         'filename': 'blue-iris-single.jpg'
     },
     'Red Gerbera Single': {
-        'query': 'red gerbera daisy flower single stem macro',
+        'url': 'https://images.pexels.com/photos/380591/pexels-photo-380591.jpeg',
         'filename': 'red-gerbera-single.jpg'
     },
     'Pink Carnation Single': {
-        'query': 'pink carnation flower single stem ruffled petals',
+        'url': 'https://images.pexels.com/photos/167316/pexels-photo-167316.jpeg',
         'filename': 'pink-carnation-single.jpg'
     },
     'Luxury Flower Box': {
-        'query': 'luxury flower box roses pink white arrangement gift',
+        'url': 'https://images.pexels.com/photos/5632382/pexels-photo-5632382.jpeg',
         'filename': 'luxury-flower-box.jpg'
     },
     'Anniversary Flower Hamper': {
-        'query': 'luxury anniversary gift hamper red roses orchids',
+        'url': 'https://images.pexels.com/photos/5632388/pexels-photo-5632388.jpeg',
         'filename': 'anniversary-hamper.jpg'
     },
     'Birthday Bouquet Box': {
-        'query': 'colorful birthday flower bouquet celebration yellow pink purple',
+        'url': 'https://images.pexels.com/photos/5632385/pexels-photo-5632385.jpeg',
         'filename': 'birthday-bouquet.jpg'
     }
 }
 
-def download_image(search_query, destination_path, width=1200, height=800):
-    """Download image from Unsplash based on search query"""
+def download_image(image_url, destination_path):
+    """Download image from direct URL"""
     try:
-        # Build Unsplash URL with search query
-        url = f"{UNSPLASH_BASE}?{urlencode({'q': search_query})}"
-        
-        print(f"  Downloading from: {url}")
-        response = requests.get(url, timeout=10, allow_redirects=True)
+        print(f"  Downloading from: {image_url[:60]}...")
+        response = requests.get(image_url, timeout=15, allow_redirects=True)
         response.raise_for_status()
         
         # Save the image
@@ -95,7 +88,8 @@ def download_image(search_query, destination_path, width=1200, height=800):
         return True
         
     except Exception as e:
-        print(f"  ❌ Error downloading: {e}")
+        print(f"  ⚠️ Warning: Could not download. Error: {str(e)[:50]}")
+        print(f"     You can manually upload images via admin panel")
         return False
 
 def main():
@@ -109,7 +103,7 @@ def main():
     for category_name, image_info in category_images.items():
         print(f"\n📸 {category_name}")
         destination = CATEGORIES_DIR / image_info['filename']
-        download_image(image_info['query'], destination)
+        download_image(image_info['url'], destination)
     
     # Download product images
     print("\n\n📁 DOWNLOADING PRODUCT IMAGES...")
@@ -117,7 +111,7 @@ def main():
     for product_name, image_info in product_images.items():
         print(f"\n🌸 {product_name}")
         destination = PRODUCTS_DIR / image_info['filename']
-        download_image(image_info['query'], destination)
+        download_image(image_info['url'], destination)
     
     # Summary
     print("\n" + "="*70)
