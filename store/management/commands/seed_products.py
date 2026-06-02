@@ -3,12 +3,12 @@ from store.models import Category, Product
 from decimal import Decimal
 
 class Command(BaseCommand):
-    help = 'Seeds the database with 18 requested premium flower and add-on products with real Unsplash photo URLs and AED pricing.'
+    help = 'Seeds the database with exactly the requested premium flower and add-on products with real Unsplash photo URLs and AED pricing.'
 
     def handle(self, *args, **kwargs):
-        self.stdout.write('Preparing to seed premium flower products in AED...')
+        self.stdout.write('Preparing to seed premium flower-only products in AED...')
 
-        # 1. Ensure Categories exist
+        # 1. Ensure active Categories exist
         bouquets, _ = Category.objects.get_or_create(
             name='Bouquets', 
             slug='bouquets'
@@ -17,21 +17,20 @@ class Command(BaseCommand):
             name='Single Flowers', 
             slug='single-flowers'
         )
-        plants, _ = Category.objects.get_or_create(
-            name='Plants', 
-            slug='plants'
-        )
         gifts, _ = Category.objects.get_or_create(
             name='Gifts', 
             slug='gifts'
         )
 
+        self.stdout.write('Clearing categories other than Bouquets, Single Flowers, and Gifts...')
+        Category.objects.exclude(slug__in=['bouquets', 'single-flowers', 'gifts']).delete()
+
         self.stdout.write('Clearing old products to ensure clean seed state...')
         Product.objects.all().delete()
 
-        # 2. Product definitions
+        # 2. Product definitions matching requested inventory exactly
         products_data = [
-            # BOUQUETS
+            # === BOUQUETS ===
             {
                 'category': bouquets,
                 'name': 'Red Rose Bouquet',
@@ -54,16 +53,6 @@ class Command(BaseCommand):
             },
             {
                 'category': bouquets,
-                'name': 'Mixed Wildflower Bouquet',
-                'slug': 'mixed-wildflower-bouquet',
-                'description': 'A charming and rustic hand-tied bouquet featuring a delightful blend of colorful seasonal wildflowers, soft lavender, and fresh eucalyptus greens.',
-                'price': Decimal('245.00'),
-                'stock': 12,
-                'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1490750967868-88df5691cc03?w=600'
-            },
-            {
-                'category': bouquets,
                 'name': 'Pink Peony Bouquet',
                 'slug': 'pink-peony-bouquet',
                 'description': 'A luxurious and soft arrangement of pillowy, fresh pink peonies, beautifully styled in our signature wrapping paper. Perfect for high-end gifting.',
@@ -72,8 +61,28 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'image_url': 'https://images.unsplash.com/photo-1589994160839-163cd867cfe8?w=600'
             },
+            {
+                'category': bouquets,
+                'name': 'Tulip Bouquet',
+                'slug': 'tulip-bouquet',
+                'description': 'A beautifully crisp, fresh arrangement of premium tulips. Colorful, elegant, and classic addition to any premium home.',
+                'price': Decimal('220.00'),
+                'stock': 18,
+                'is_featured': True,
+                'image_url': 'https://images.unsplash.com/photo-1561328399-f94d2ce78679?w=600'
+            },
+            {
+                'category': bouquets,
+                'name': 'White Rose Bouquet',
+                'slug': 'white-rose-bouquet',
+                'description': 'An opulent arrangement of pure white premium roses, hand-styled for high-end gifting. Elegance at its finest.',
+                'price': Decimal('350.00'),
+                'stock': 12,
+                'is_featured': False,
+                'image_url': 'https://images.unsplash.com/photo-1526047932273-341f2a7631f9?w=600'
+            },
             
-            # SINGLE FLOWERS
+            # === SINGLE FLOWERS ===
             {
                 'category': single_flowers,
                 'name': 'White Lily',
@@ -86,46 +95,6 @@ class Command(BaseCommand):
             },
             {
                 'category': single_flowers,
-                'name': 'Pink Tulip',
-                'slug': 'pink-tulip',
-                'description': 'A beautifully crisp single stem of premium Dutch pink tulip. Graceful and simple, it brings a fresh pop of color to any room.',
-                'price': Decimal('59.00'),
-                'stock': 30,
-                'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1561328399-f94d2ce78679?w=600'
-            },
-            {
-                'category': single_flowers,
-                'name': 'Blue Iris',
-                'slug': 'blue-iris',
-                'description': 'An exotic single stem of deep blue iris featuring striking purple-blue petals highlighted with bright golden-yellow markings.',
-                'price': Decimal('69.00'),
-                'stock': 15,
-                'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=600'
-            },
-            {
-                'category': single_flowers,
-                'name': 'Yellow Marigold',
-                'slug': 'yellow-marigold',
-                'description': 'A vibrant single stem of bright yellow marigold, symbolizing passion, warmth, and creativity. Popular for festive decor and daily freshness.',
-                'price': Decimal('39.00'),
-                'stock': 30,
-                'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1598880940080-ff9a29891b85?w=600'
-            },
-            {
-                'category': single_flowers,
-                'name': 'Red Gerbera Daisy',
-                'slug': 'red-gerbera-daisy',
-                'description': 'A cheerful, large-flowered single stem of bright red Gerbera daisy, guaranteed to uplift spirits with its bold color and classic form.',
-                'price': Decimal('49.00'),
-                'stock': 20,
-                'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?w=600'
-            },
-            {
-                'category': single_flowers,
                 'name': 'Purple Lavender',
                 'slug': 'purple-lavender',
                 'description': 'A fragrant bundle of dried premium French purple lavender stems, popular for its soothing aromatherapy benefits and rustic visual charm.',
@@ -134,50 +103,38 @@ class Command(BaseCommand):
                 'is_featured': True,
                 'image_url': 'https://images.unsplash.com/photo-1611909023032-2d6b3134ecba?w=600'
             },
-            
-            # PLANTS
             {
-                'category': plants,
-                'name': 'Peace Lily Plant',
-                'slug': 'peace-lily-plant',
-                'description': 'An elegant and robust Peace Lily plant with lush dark green foliage and beautiful white flowers. Renowned for its superb air-purifying capabilities.',
-                'price': Decimal('129.00'),
-                'stock': 18,
-                'is_featured': True,
-                'image_url': 'https://images.unsplash.com/photo-1597055181449-b977fc38f91b?w=600'
-            },
-            {
-                'category': plants,
-                'name': 'Orchid Plant',
-                'slug': 'orchid-plant',
-                'description': 'A delicate and majestic potted Phalaenopsis orchid plant with multiple purple blooms. Comes in a sage green ceramic planter.',
-                'price': Decimal('199.00'),
-                'stock': 10,
-                'is_featured': True,
-                'image_url': 'https://images.unsplash.com/photo-1566882168631-1a75c89d6fd0?w=600'
-            },
-            {
-                'category': plants,
-                'name': 'Money Plant',
-                'slug': 'money-plant',
-                'description': 'A gorgeous potted Epipremnum aureum (Money Plant) with trailing heart-shaped leaves splashed with gold. Perfect for bringing good fortune and green energy.',
-                'price': Decimal('89.00'),
-                'stock': 25,
+                'category': single_flowers,
+                'name': 'Blue Iris Single',
+                'slug': 'blue-iris-single',
+                'description': 'An exotic single stem of deep blue iris featuring striking purple-blue petals highlighted with bright golden-yellow markings.',
+                'price': Decimal('65.00'),
+                'stock': 15,
                 'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=600'
+                'image_url': 'https://images.unsplash.com/photo-1589994965851-a8f479c573a9?w=600'
             },
             {
-                'category': plants,
-                'name': 'Jade Plant',
-                'slug': 'jade-plant',
-                'description': 'A resilient potted succulent Jade plant with thick glossy leaves and tree-like woody stems. Symbolizes prosperity, luck, and friendship.',
-                'price': Decimal('99.00'),
-                'stock': 16,
+                'category': single_flowers,
+                'name': 'Red Gerbera Single',
+                'slug': 'red-gerbera-single',
+                'description': 'A cheerful and large-flowered single stem of bright red Gerbera daisy, guaranteed to uplift spirits with its bold color.',
+                'price': Decimal('55.00'),
+                'stock': 20,
                 'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1459156212016-c812468e2115?w=600'
+                'image_url': 'https://images.unsplash.com/photo-1453728013993-6d66e9c9123a?w=600'
+            },
+            {
+                'category': single_flowers,
+                'name': 'Pink Carnation Single',
+                'slug': 'pink-carnation-single',
+                'description': 'A delicate, long-stemmed single pink carnation, expressing deep admiration, love, and gratitude.',
+                'price': Decimal('49.00'),
+                'stock': 30,
+                'is_featured': False,
+                'image_url': 'https://images.unsplash.com/photo-1487530811015-780780fc54c2?w=600'
             },
             
-            # GIFTS & ADD-ONS
+            # === GIFTS ===
             {
                 'category': gifts,
                 'name': 'Rose Gift Box',
@@ -200,27 +157,69 @@ class Command(BaseCommand):
             },
             {
                 'category': gifts,
-                'name': 'Helium Balloon',
-                'slug': 'helium-balloon',
-                'description': 'A beautiful, floating helium balloon in pastel tones. Perfect add-on to elevate your floral surprise.',
-                'price': Decimal('45.00'),
-                'stock': 999,
-                'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?w=600'
+                'name': 'Luxury Flower Box',
+                'slug': 'luxury-flower-box',
+                'description': 'An exquisite presentation of fresh premium flowers arranged meticulously in our signature luxury gift box.',
+                'price': Decimal('450.00'),
+                'stock': 10,
+                'is_featured': True,
+                'image_url': 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600'
             },
             {
                 'category': gifts,
-                'name': 'Luxury Chocolates',
-                'slug': 'luxury-chocolates',
-                'description': 'A curated box of delicious, artisanal Belgian luxury chocolates. A sweet accompaniment to your flower arrangements.',
-                'price': Decimal('115.00'),
+                'name': 'Anniversary Flower Hamper',
+                'slug': 'anniversary-flower-hamper',
+                'description': 'The ultimate romance gift basket loaded with fresh roses, floral treats, and premium accents. Perfect for marking milestones.',
+                'price': Decimal('599.00'),
+                'stock': 5,
+                'is_featured': True,
+                'image_url': 'https://images.unsplash.com/photo-1487530811015-780780fc54c2?w=600'
+            },
+            {
+                'category': gifts,
+                'name': 'Birthday Bouquet Box',
+                'slug': 'birthday-bouquet-box',
+                'description': 'A gorgeous birthday curation featuring a fresh premium bouquet and upscale treats presented beautifully in our custom card box.',
+                'price': Decimal('380.00'),
+                'stock': 8,
+                'is_featured': False,
+                'image_url': 'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=600'
+            },
+            
+            # === UPSELL ADD-ONS (Seeded under Gifts) ===
+            {
+                'category': gifts,
+                'name': 'Rose Water Spray',
+                'slug': 'rose-water-spray',
+                'description': 'Premium organic rose water spray flower care add-on. Essential for keeping fresh cuts hydrated.',
+                'price': Decimal('35.00'),
                 'stock': 999,
                 'is_featured': False,
-                'image_url': 'https://images.unsplash.com/photo-1511381939415-e44015466834?w=600'
+                'image_url': 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=600'
+            },
+            {
+                'category': gifts,
+                'name': 'Gift Ribbon & Card',
+                'slug': 'gift-ribbon-card',
+                'description': 'High-quality luxury satin gift ribbon and greeting card wrapping add-on. Customizable on demand.',
+                'price': Decimal('25.00'),
+                'stock': 999,
+                'is_featured': False,
+                'image_url': 'https://images.unsplash.com/photo-1519378058457-4c29a0a2efac?w=600'
+            },
+            {
+                'category': gifts,
+                'name': 'Flower Food Sachet',
+                'slug': 'flower-food-sachet',
+                'description': 'Freshness flower food sachet add-on to extend bloom life in your signature vase.',
+                'price': Decimal('15.00'),
+                'stock': 999,
+                'is_featured': False,
+                'image_url': 'https://images.unsplash.com/photo-1561328399-f94d2ce78679?w=600'
             }
         ]
 
-        # 3. Create Products
+        # 3. Create Products in the database
         for item in products_data:
             prod, created = Product.objects.get_or_create(
                 slug=item['slug'],
@@ -235,7 +234,7 @@ class Command(BaseCommand):
                 }
             )
             if not created:
-                # Update details if already present
+                # Update details if already present to reflect clean seed state
                 prod.category = item['category']
                 prod.name = item['name']
                 prod.description = item['description']
@@ -246,4 +245,4 @@ class Command(BaseCommand):
                 prod.save()
             self.stdout.write(f"Seeded Product: {prod.name} ({'Created' if created else 'Updated'})")
 
-        self.stdout.write(self.style.SUCCESS('Successfully seeded the 18 premium products and add-ons in AED!'))
+        self.stdout.write(self.style.SUCCESS('Successfully seeded premium flower-only boutique in AED!'))
