@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import django
+from django.utils.text import slugify
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'antigravity_flowers.settings')
 django.setup()
@@ -92,21 +93,24 @@ products_data = [
     }
 ]
 
+
 for prod in products_data:
     category = created_cats[prod['category']]
-    product, created = Product.objects.get_or_create(
-        name=prod['name'],
-        category=category,
-        defaults={
-            'description': prod['description'],
-            'price': prod['price'],
-            'stock': prod['stock'],
-            'is_featured': prod['is_featured']
-        }
-    )
-    if created:
-        print(f"✓ Created product: {prod['name']} - AED {prod['price']}")
-    else:
+    slug = slugify(prod['name'])
+    
+    try:
+        product = Product.objects.get(slug=slug)
         print(f"→ Product already exists: {prod['name']}")
+    except Product.DoesNotExist:
+        product = Product.objects.create(
+            name=prod['name'],
+            category=category,
+            slug=slug,
+            description=prod['description'],
+            price=prod['price'],
+            stock=prod['stock'],
+            is_featured=prod['is_featured']
+        )
+        print(f"✓ Created product: {prod['name']} - AED {prod['price']}")
 
 print("\n✓ All categories and products added successfully!")
