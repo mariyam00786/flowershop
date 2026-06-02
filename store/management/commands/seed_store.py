@@ -8,19 +8,27 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         self.stdout.write('Preparing to seed premium flower-only products in AED...')
 
-        # 1. Ensure active Categories exist
+        # 1. Ensure active Categories exist by slug (unique field)
         bouquets, _ = Category.objects.get_or_create(
-            name='Bouquets', 
-            slug='bouquets'
+            slug='bouquets',
+            defaults={'name': 'Bouquets'}
         )
         single_flowers, _ = Category.objects.get_or_create(
-            name='Single Flowers', 
-            slug='single-flowers'
+            slug='single-flowers',
+            defaults={'name': 'Single Flowers'}
         )
         gifts, _ = Category.objects.get_or_create(
-            name='Gifts', 
-            slug='gifts'
+            slug='gifts',
+            defaults={'name': 'Gifts'}
         )
+
+        # Force naming matching user requirements
+        bouquets.name = 'Bouquets'
+        bouquets.save()
+        single_flowers.name = 'Single Flowers'
+        single_flowers.save()
+        gifts.name = 'Gifts'
+        gifts.save()
 
         self.stdout.write('Clearing categories other than Bouquets, Single Flowers, and Gifts...')
         Category.objects.exclude(slug__in=['bouquets', 'single-flowers', 'gifts']).delete()
