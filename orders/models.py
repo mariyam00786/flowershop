@@ -36,10 +36,7 @@ class Order(models.Model):
     )
 
     PAYMENT_METHODS = (
-        ('STRIPE', 'Credit/Debit Card (Stripe)'),
         ('RAZORPAY', 'UPI/Net Banking (Razorpay)'),
-        ('COD', 'Cash on Delivery'),
-        ('WALLET', 'Wallet / Store Credit'),
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
