@@ -95,26 +95,15 @@
                     </div>
                 </div>
 
-                <!-- Flowers Menu -->
+                <!-- Shop By Flower Menu -->
                 <div class="relative group py-4">
                     <button class="flex items-center gap-1 hover:text-brandGold transition-colors nav-hover-line">
-                        Flowers <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
-                    </button>
-                    <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-48 bg-white border border-zinc-100 shadow-xl opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2">
-                        <a href="{% url 'store:product_list' %}?category=bouquets" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Bouquets</a>
-                        <a href="{% url 'store:product_list' %}?q=vase" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Vases</a>
-                        <a href="{% url 'store:product_list' %}?q=box" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Boxes</a>
-                    </div>
-                </div>
-
-                <!-- Combos Menu -->
-                <div class="relative group py-4">
-                    <button class="flex items-center gap-1 hover:text-brandGold transition-colors nav-hover-line">
-                        Combos <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
+                        Shop By Flower <i data-lucide="chevron-down" class="w-3.5 h-3.5 opacity-60"></i>
                     </button>
                     <div class="absolute top-full left-1/2 transform -translate-x-1/2 w-52 bg-white border border-zinc-100 shadow-xl opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2">
-                        <a href="{% url 'store:product_list' %}?q=cake" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Cakes & Flowers</a>
-                        <a href="{% url 'store:product_list' %}?q=chocolate" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Chocolates</a>
+                        <a href="{% url 'store:product_list' %}?category=bouquets" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Bouquets</a>
+                        <a href="{% url 'store:product_list' %}?category=single-flowers" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Single Flowers</a>
+                        <a href="{% url 'store:product_list' %}?q=box" class="px-4 py-2 hover:bg-zinc-50 hover:text-brandGold transition-colors">Flower Boxes</a>
                     </div>
                 </div>
 
