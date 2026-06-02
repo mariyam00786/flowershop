@@ -130,11 +130,6 @@ LOGIN_URL = 'accounts:login'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 DEFAULT_FROM_EMAIL = 'Rose & Ivy <no-reply@antigravityflowers.com>'
 
-# STRIPE PAYMENT GATEWAY CONFIG
-STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY', default='pk_test_51P1234567890abcdefghijklmnopqrstuvwxyz')
-STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY', default='sk_test_51P1234567890abcdefghijklmnopqrstuvwxyz')
-STRIPE_WEBHOOK_SECRET = config('STRIPE_WEBHOOK_SECRET', default='')
-
 # RAZORPAY PAYMENT GATEWAY CONFIG
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='rzp_test_1234567890abcdef')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='abcdef1234567890')
