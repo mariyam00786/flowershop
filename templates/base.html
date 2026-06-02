@@ -215,28 +215,40 @@
         <div id="cart-drawer-upsell" class="p-6 bg-zinc-50 border-t border-zinc-100">
             <h4 class="text-xs tracking-wider uppercase font-semibold text-brandCharcoal mb-3">Add Luxury Touches</h4>
             <div class="space-y-3 text-xs">
-                <!-- Upsell: Balloon -->
+                <!-- Upsell: Rose Water Spray -->
                 <label class="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-brandGold transition-colors select-none">
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" id="upsell-balloon-checkbox" onchange="toggleUpsellItem('helium-balloon', this.checked)" class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold">
+                        <input type="checkbox" id="upsell-rose-water-checkbox" onchange="toggleUpsellItem('rose-water-spray', this.checked)" class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold">
                         <div>
-                            <span class="font-semibold text-brandCharcoal block">Helium Balloon</span>
-                            <span class="text-[10px] text-zinc-400">Floating soft pastel tones</span>
+                            <span class="font-semibold text-brandCharcoal block">Rose Water Spray</span>
+                            <span class="text-[10px] text-zinc-400">Flower care add-on</span>
                         </div>
                     </div>
-                    <span class="font-bold text-zinc-700 font-sans">+AED 45.00</span>
+                    <span class="font-bold text-zinc-700 font-sans">+AED 35.00</span>
                 </label>
 
-                <!-- Upsell: Chocolates -->
+                <!-- Upsell: Gift Ribbon & Card -->
                 <label class="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-brandGold transition-colors select-none">
                     <div class="flex items-center gap-3">
-                        <input type="checkbox" id="upsell-chocolates-checkbox" onchange="toggleUpsellItem('luxury-chocolates', this.checked)" class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold">
+                        <input type="checkbox" id="upsell-gift-ribbon-checkbox" onchange="toggleUpsellItem('gift-ribbon-card', this.checked)" class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold">
                         <div>
-                            <span class="font-semibold text-brandCharcoal block">Luxury Chocolates</span>
-                            <span class="text-[10px] text-zinc-400">Box of Belgian chocolates</span>
+                            <span class="font-semibold text-brandCharcoal block">Gift Ribbon & Card</span>
+                            <span class="text-[10px] text-zinc-400">Wrapping add-on</span>
                         </div>
                     </div>
-                    <span class="font-bold text-zinc-700 font-sans">+AED 115.00</span>
+                    <span class="font-bold text-zinc-700 font-sans">+AED 25.00</span>
+                </label>
+
+                <!-- Upsell: Flower Food Sachet -->
+                <label class="flex items-center justify-between p-3 bg-white border border-zinc-200 rounded-lg cursor-pointer hover:border-brandGold transition-colors select-none">
+                    <div class="flex items-center gap-3">
+                        <input type="checkbox" id="upsell-flower-food-checkbox" onchange="toggleUpsellItem('flower-food-sachet', this.checked)" class="w-4 h-4 text-brandGold border-zinc-300 rounded focus:ring-brandGold">
+                        <div>
+                            <span class="font-semibold text-brandCharcoal block">Flower Food Sachet</span>
+                            <span class="text-[10px] text-zinc-400">Freshness add-on</span>
+                        </div>
+                    </div>
+                    <span class="font-bold text-zinc-700 font-sans">+AED 15.00</span>
                 </label>
             </div>
         </div>
@@ -378,11 +390,17 @@
             currentCartItems = data.items || [];
             
             // Synchronize upsell checkboxes
-            const balloonChecked = currentCartItems.some(item => item.product_slug === 'helium-balloon');
-            const chocolatesChecked = currentCartItems.some(item => item.product_slug === 'luxury-chocolates');
+            const roseWaterChecked = currentCartItems.some(item => item.product_slug === 'rose-water-spray');
+            const giftRibbonChecked = currentCartItems.some(item => item.product_slug === 'gift-ribbon-card');
+            const flowerFoodChecked = currentCartItems.some(item => item.product_slug === 'flower-food-sachet');
             
-            document.getElementById('upsell-balloon-checkbox').checked = balloonChecked;
-            document.getElementById('upsell-chocolates-checkbox').checked = chocolatesChecked;
+            const rwCb = document.getElementById('upsell-rose-water-checkbox');
+            const grCb = document.getElementById('upsell-gift-ribbon-checkbox');
+            const ffCb = document.getElementById('upsell-flower-food-checkbox');
+            
+            if (rwCb) rwCb.checked = roseWaterChecked;
+            if (grCb) grCb.checked = giftRibbonChecked;
+            if (ffCb) ffCb.checked = flowerFoodChecked;
             
             // Render items list
             if (currentCartItems.length === 0) {

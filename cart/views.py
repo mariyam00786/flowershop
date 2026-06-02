@@ -31,13 +31,16 @@ def _get_cart_json_data(cart):
         })
     
     # Dynamic lookup for upsell product IDs
-    helium_balloon = Product.objects.filter(slug='helium-balloon').first()
-    luxury_chocolates = Product.objects.filter(slug='luxury-chocolates').first()
+    rose_water = Product.objects.filter(slug='rose-water-spray').first()
+    gift_ribbon = Product.objects.filter(slug='gift-ribbon-card').first()
+    flower_food = Product.objects.filter(slug='flower-food-sachet').first()
     upsell_ids = {}
-    if helium_balloon:
-        upsell_ids['helium-balloon'] = helium_balloon.id
-    if luxury_chocolates:
-        upsell_ids['luxury-chocolates'] = luxury_chocolates.id
+    if rose_water:
+        upsell_ids['rose-water-spray'] = rose_water.id
+    if gift_ribbon:
+        upsell_ids['gift-ribbon-card'] = gift_ribbon.id
+    if flower_food:
+        upsell_ids['flower-food-sachet'] = flower_food.id
         
     return {
         'cart_total_items': cart.total_items,
