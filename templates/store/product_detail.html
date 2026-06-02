@@ -82,7 +82,7 @@
                     Fresh In Stock (${product.stock} curations available)
                 </span>
                 
-                <form action="{% url 'cart:cart_add' product.id %}" method="POST" class="space-y-4">
+                <form action="{% url 'cart:cart_add' product.id %}" method="POST" class="space-y-4 cart-add-form">
                     {% csrf_token %}
                     <div class="flex flex-wrap items-center gap-4">
                         <!-- Custom Quantities Selector -->
@@ -225,7 +225,7 @@
                     </div>
                     <div class="pt-3 mt-3 border-t border-zinc-50 flex items-center justify-between gap-2 select-none">
                         <span class="font-sans font-bold text-xs text-brandCharcoal">AED {{ prod.price }} Inc. VAT</span>
-                        <form action="{% url 'cart:cart_add' prod.id %}" method="POST">
+                        <form action="{% url 'cart:cart_add' prod.id %}" method="POST" class="cart-add-form">
                             {% csrf_token %}
                             <input type="hidden" name="quantity" value="1">
                             <button type="submit" class="text-brandCharcoal hover:text-brandGold transition-colors p-1" title="Add to bag">
