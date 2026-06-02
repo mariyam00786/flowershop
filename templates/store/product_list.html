@@ -122,7 +122,7 @@
                             <div class="pt-3 border-t border-zinc-50 flex items-center justify-between gap-2 select-none">
                                 <span class="font-sans font-bold text-xs md:text-sm text-brandCharcoal">AED {{ prod.price }} Inc. VAT</span>
                                 {% if prod.stock > 0 %}
-                                    <form action="{% url 'cart:cart_add' prod.id %}" method="POST">
+                                    <form action="{% url 'cart:cart_add' prod.id %}" method="POST" class="cart-add-form">
                                         {% csrf_token %}
                                         <input type="hidden" name="quantity" value="1">
                                         <button type="submit" class="bg-brandCharcoal text-white hover:bg-brandGold transition-colors text-[10px] uppercase tracking-widest font-semibold px-4 py-2 rounded-full flex items-center gap-1.5">
