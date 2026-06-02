@@ -31,7 +31,6 @@ class Order(models.Model):
     PAYMENT_STATUS = (
         ('UNPAID', 'Unpaid'),
         ('PAID', 'Paid'),
-        ('COD_PENDING', 'COD Pending'),
         ('FAILED', 'Failed'),
     )
 
