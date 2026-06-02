@@ -179,14 +179,31 @@
     <footer class="bg-zinc-50 border-t border-zinc-100 py-16 mt-auto select-none">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h5 class="font-serif text-3xl text-brandCharcoal tracking-widest mb-4">Rose & Ivy</h5>
-            <p class="text-zinc-400 text-xs md:text-sm max-w-lg mx-auto font-light leading-relaxed mb-6">
+            <p class="text-zinc-400 text-xs md:text-sm max-w-lg mx-auto font-light leading-relaxed mb-8">
                 Curated luxurious bouquets, fresh single cuts, indoor plants, and floral gift combos delivered across UAE. Same-day shipping available.
             </p>
-            <div class="flex justify-content-center items-center justify-center gap-6 mb-8 text-zinc-500">
-                <a href="#" class="hover:text-brandGold transition-colors"><i data-lucide="facebook" class="w-4 h-4"></i></a>
-                <a href="#" class="hover:text-brandGold transition-colors"><i data-lucide="instagram" class="w-4 h-4"></i></a>
-                <a href="#" class="hover:text-brandGold transition-colors"><i data-lucide="twitter" class="w-4 h-4"></i></a>
+            
+            <!-- Social Contact Links -->
+            <div class="flex justify-center items-center gap-4 mb-8">
+                <!-- WhatsApp Button -->
+                <a href="https://wa.me/{{ settings.WHATSAPP_PHONE_NUMBER }}?text=Hi! I'm reaching out from the Flower Shop website..." 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="flex items-center gap-2 bg-white border border-zinc-200 hover:border-green-500 hover:bg-green-50 text-zinc-600 hover:text-green-700 px-5 py-3 rounded-full transition-all duration-300 shadow-sm hover:shadow-md group">
+                    <i data-lucide="message-circle" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold tracking-wide">WhatsApp</span>
+                </a>
+                
+                <!-- Instagram Button -->
+                <a href="https://instagram.com/{{ settings.INSTAGRAM_USERNAME }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="flex items-center gap-2 bg-white border border-zinc-200 hover:border-pink-500 hover:bg-pink-50 text-zinc-600 hover:text-pink-700 px-5 py-3 rounded-full transition-all duration-300 shadow-sm hover:shadow-md group">
+                    <i data-lucide="instagram" class="w-5 h-5 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-semibold tracking-wide">Instagram</span>
+                </a>
             </div>
+            
             <p class="text-zinc-400 text-[10px] tracking-widest uppercase mb-0">&copy; {% now "Y" %} Rose & Ivy. Licensed & Powered by Django 4.x.</p>
         </div>
     </footer>

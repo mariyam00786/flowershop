@@ -134,3 +134,7 @@ DEFAULT_FROM_EMAIL = 'Rose & Ivy <no-reply@antigravityflowers.com>'
 RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='rzp_test_1234567890abcdef')
 RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='abcdef1234567890')
 
+# SOCIAL CONTACT LINKS
+WHATSAPP_PHONE_NUMBER = config('WHATSAPP_PHONE_NUMBER', default='971501234567')
+INSTAGRAM_USERNAME = config('INSTAGRAM_USERNAME', default='roseandivyflowers')
+
