@@ -19,13 +19,11 @@ def checkout_view(request):
         
     addresses = request.user.addresses.all()
     default_address = addresses.filter(is_default=True).first() or addresses.first()
-    wallet = request.user.wallet
     
     context = {
         'cart': cart,
         'addresses': addresses,
         'default_address': default_address,
-        'wallet': wallet,
     }
     return render(request, 'orders/checkout.html', context)
 
@@ -108,67 +106,8 @@ def place_order_ajax(request):
             price=item.product.price
         )
         
-    # PROCESS DIRECT PAYMENTS (COD or WALLET)
-    if payment_method == 'COD':
-        order.payment_status = 'COD_PENDING'
-        order.save()
-        
-        # Deduct inventory stock
-        for item in cart.items.all():
-            prod = item.product
-            prod.stock -= item.quantity
-            prod.save()
-            
-        # Clear Cart
-        cart.items.all().delete()
-        
-        messages.success(request, f"Order #{order.id} placed successfully using Cash on Delivery!")
-        return JsonResponse({
-            'success': True,
-            'payment_needed': False,
-            'redirect_url': reverse('orders:confirmation', kwargs={'order_id': order.id})
-        })
-        
-    elif payment_method == 'WALLET':
-        wallet = request.user.wallet
-        if wallet.balance < total:
-            # Delete created order to keep DB clean
-            order.delete()
-            return JsonResponse({'success': False, 'message': f"Insufficient wallet balance. Total is ₹{total}, but your balance is ₹{wallet.balance}."})
-            
-        # Deduct wallet
-        wallet.debit(total, description=f"Deducted for Order #{order.id}")
-        
-        # Deduct inventory stock
-        for item in cart.items.all():
-            prod = item.product
-            prod.stock -= item.quantity
-            prod.save()
-            
-        order.payment_status = 'PAID'
-        order.save()
-        
-        # Clear Cart
-        cart.items.all().delete()
-        
-        messages.success(request, f"Order #{order.id} placed successfully! Paid ₹{total} from Wallet credits.")
-        return JsonResponse({
-            'success': True,
-            'payment_needed': False,
-            'redirect_url': reverse('orders:confirmation', kwargs={'order_id': order.id})
-        })
-        
-    # STRIPE OR RAZORPAY GATEWAY PAYMENTS
-    elif payment_method == 'STRIPE':
-        return JsonResponse({
-            'success': True,
-            'payment_needed': True,
-            'gateway': 'STRIPE',
-            'order_id': order.id,
-            'redirect_url': reverse('payments:stripe_checkout', kwargs={'order_id': order.id})
-        })
-        
-    elif payment_method == 'RAZORPAY':
+    # RAZORPAY GATEWAY PAYMENT
+    if payment_method == 'RAZORPAY':
         return JsonResponse({
             'success': True,
             'payment_needed': True,
