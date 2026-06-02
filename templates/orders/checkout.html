@@ -188,32 +188,6 @@
         }
     }
 
-    // Custom tab switcher logic (vanilla JavaScript)
-    function switchPaymentTab(method) {
-        activePaymentMethod = method;
-        
-        // Update tab buttons styles
-        document.querySelectorAll('.payment-tab-btn').forEach(btn => {
-            btn.classList.remove('border-brandGold', 'text-brandGold', 'bg-zinc-50/50');
-            btn.classList.add('border-zinc-200', 'text-zinc-500', 'bg-white');
-        });
-        
-        const activeBtn = document.getElementById(`tab-btn-${method}`);
-        if (activeBtn) {
-            activeBtn.classList.remove('border-zinc-200', 'text-zinc-500', 'bg-white');
-            activeBtn.classList.add('border-brandGold', 'text-brandGold', 'bg-zinc-50/50');
-        }
-        
-        // Update tab panels visibility
-        document.querySelectorAll('.payment-tab-panel').forEach(panel => {
-            panel.classList.add('hidden');
-        });
-        
-        const activePanel = document.getElementById(`panel-${method}`);
-        if (activePanel) {
-            activePanel.classList.remove('hidden');
-        }
-    }
 
     // Coupon logic
     function applyCouponCode() {
