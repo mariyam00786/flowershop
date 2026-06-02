@@ -7,11 +7,7 @@ from django.http import HttpResponseBadRequest
 from django.views.decorators.csrf import csrf_exempt
 from orders.models import Order
 from cart.models import Cart
-import stripe
 import razorpay
-
-# Configure Stripe key
-stripe.api_key = settings.STRIPE_SECRET_KEY
 
 @login_required
 def stripe_checkout_view(request, order_id):
