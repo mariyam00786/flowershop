@@ -67,99 +67,20 @@
             </h3>
 
             {% if addresses %}
-                <!-- Custom Luxury Payment Tabs -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6 select-none">
-                    <!-- Stripe Button -->
-                    <button type="button" onclick="switchPaymentTab('STRIPE')" id="tab-btn-STRIPE" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-brandGold bg-zinc-50/50 text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
-                        <i data-lucide="credit-card" class="w-6 h-6 mb-2"></i>
-                        <span class="text-[9px] md:text-[10px] font-bold text-center">Stripe (Card)</span>
-                    </button>
-                    <!-- Razorpay Button -->
-                    <button type="button" onclick="switchPaymentTab('RAZORPAY')" id="tab-btn-RAZORPAY" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-zinc-200 text-zinc-500 bg-white hover:border-brandGold hover:text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
-                        <i data-lucide="qr-code" class="w-6 h-6 mb-2"></i>
-                        <span class="text-[9px] md:text-[10px] font-bold text-center">Razorpay (UPI)</span>
-                    </button>
-                    <!-- COD Button -->
-                    <button type="button" onclick="switchPaymentTab('COD')" id="tab-btn-COD" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-zinc-200 text-zinc-500 bg-white hover:border-brandGold hover:text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
-                        <i data-lucide="truck" class="w-6 h-6 mb-2"></i>
-                        <span class="text-[9px] md:text-[10px] font-bold text-center">Cash On Delivery</span>
-                    </button>
-                    <!-- Wallet Button -->
-                    <button type="button" onclick="switchPaymentTab('WALLET')" id="tab-btn-WALLET" class="payment-tab-btn flex flex-col items-center justify-center p-4 border border-zinc-200 text-zinc-500 bg-white hover:border-brandGold hover:text-brandGold rounded-xl transition-all font-medium text-xs tracking-wider uppercase">
-                        <i data-lucide="wallet" class="w-6 h-6 mb-2"></i>
-                        <span class="text-[9px] md:text-[10px] font-bold text-center">Wallet Balance</span>
-                    </button>
-                </div>
-
-                <!-- Payment Details Panel Content -->
+                <!-- Razorpay Payment Method -->
                 <div class="bg-zinc-50 border border-zinc-100 rounded-2xl p-5 select-none">
-                    <!-- Stripe Panel -->
-                    <div id="panel-STRIPE" class="payment-tab-panel space-y-3">
-                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> Stripe Secure Checkout
-                        </h4>
-                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
-                            Pay securely using your credit or debit card. You will be redirected to the secure Stripe Checkout portal to safely complete your transaction.
-                        </p>
-                        <div class="bg-white border border-zinc-200 rounded-xl p-3 flex items-center gap-2 max-w-sm">
-                            <i data-lucide="info" class="w-4 h-4 text-brandGold flex-shrink-0"></i>
-                            <span class="text-[10px] text-zinc-500">Stripe Test Card: <strong class="text-brandCharcoal">4242 4242 4242 4242</strong></span>
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="w-12 h-12 bg-brandGold/10 rounded-full flex items-center justify-center">
+                            <i data-lucide="qr-code" class="w-6 h-6 text-brandGold"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-bold text-brandCharcoal">Razorpay Payment Gateway</h4>
+                            <p class="text-xs text-zinc-500">Secure payment via UPI, Net Banking, Cards</p>
                         </div>
                     </div>
-
-                    <!-- Razorpay Panel -->
-                    <div id="panel-RAZORPAY" class="payment-tab-panel hidden space-y-3">
-                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
-                            <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i> Razorpay Indian Gateway
-                        </h4>
-                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
-                            Pay using Indian UPI apps, Net Banking, or Credit Cards. A secure interactive popup will let you complete the payment seamlessly.
-                        </p>
-                        <div class="bg-white border border-zinc-200 rounded-xl p-3 flex items-center gap-2 max-w-sm">
-                            <i data-lucide="info" class="w-4 h-4 text-brandGold flex-shrink-0"></i>
-                            <span class="text-[10px] text-zinc-500">Razorpay Test UPI ID: <strong class="text-brandCharcoal">success@razorpay</strong></span>
-                        </div>
-                    </div>
-
-                    <!-- COD Panel -->
-                    <div id="panel-COD" class="payment-tab-panel hidden space-y-3">
-                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
-                            <i data-lucide="truck" class="w-4 h-4 text-brandGold"></i> Cash on Delivery (COD)
-                        </h4>
-                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
-                            Pay upon delivery of your luxury stems. Our delivery agents in Dubai/Abu Dhabi accept cash, card terminals, or instant mobile UPI scan links.
-                        </p>
-                    </div>
-
-                    <!-- Wallet Panel -->
-                    <div id="panel-WALLET" class="payment-tab-panel hidden space-y-4">
-                        <h4 class="text-xs uppercase tracking-widest font-bold text-brandCharcoal flex items-center gap-1.5">
-                            <i data-lucide="wallet" class="w-4 h-4 text-brandGold"></i> Pay via Wallet Balance
-                        </h4>
-                        <p class="text-xs text-zinc-500 font-light leading-relaxed">
-                            Instantly deduct the amount from your registered account store credit balance.
-                        </p>
-                        <div class="bg-white border border-zinc-200 p-4 rounded-xl flex flex-wrap justify-between items-center gap-3">
-                            <div>
-                                <span class="text-[10px] text-zinc-400 uppercase tracking-widest font-semibold block mb-0.5">Your Balance</span>
-                                <span class="font-sans font-bold text-base text-brandCharcoal">AED {{ wallet.balance|default:"0.00" }}</span>
-                            </div>
-                            
-                            {% if wallet.balance >= cart.total_price %}
-                                <span class="bg-green-50 text-green-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full border border-green-100">
-                                    Balance Sufficient
-                                </span>
-                            {% else %}
-                                <div class="text-right">
-                                    <span class="bg-red-50 text-red-700 text-[10px] uppercase tracking-widest font-bold px-3 py-1.5 rounded-full border border-red-100 block mb-1">
-                                        Insufficient Balance
-                                    </span>
-                                    <a href="{% url 'accounts:wallet' %}" class="text-[10px] font-bold text-brandGold hover:underline uppercase tracking-widest" target="_blank">
-                                        Top Up Wallet
-                                    </a>
-                                </div>
-                            {% endif %}
-                        </div>
+                    <div class="bg-white border border-zinc-200 rounded-xl p-3 flex items-center gap-2 max-w-sm">
+                        <i data-lucide="info" class="w-4 h-4 text-brandGold flex-shrink-0"></i>
+                        <span class="text-[10px] text-zinc-500">Razorpay Test UPI ID: <strong class="text-brandCharcoal">success@razorpay</strong></span>
                     </div>
                 </div>
 
@@ -244,7 +165,7 @@
 <script>
     // State values
     let selectedAddressId = "{{ default_address.id|default:'' }}";
-    let activePaymentMethod = "STRIPE";
+    let activePaymentMethod = "RAZORPAY";
     let appliedCouponCode = "";
     let appliedDiscountPercent = 0;
     let cartSubtotal = parseFloat("{{ cart.total_price }}");
@@ -382,8 +303,8 @@
                     showToast("Order placed successfully!", "success");
                     window.location.href = data.redirect_url;
                 } else {
-                    // Gateway payment redirect/popup
-                    if (data.gateway === 'STRIPE' || data.gateway === 'RAZORPAY') {
+                    // Razorpay gateway redirect
+                    if (data.gateway === 'RAZORPAY') {
                         window.location.href = data.redirect_url;
                     }
                 }
